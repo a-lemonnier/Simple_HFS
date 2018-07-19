@@ -1,0 +1,152 @@
+#include "io.hpp"
+
+_io::_io(int argc, char** argv) {
+
+    // Default values
+    A=0; A_isempty=true;
+    B=0; B_isempty=true;
+    lambda=0; lambda_isempty=true;
+
+    // convert char* into std::string via sI, sJ, sF;
+    std::string sI, sJ, sF;
+
+    // Parse command line
+ 	if (argc==2 || argc>6) {
+		std::string help;
+        std::string p_name(argv[0]);
+		help="Usage: "+p_name+" [OPTIONS]\n \
+	compute energy shift from quantum numbers and hfs constants if available \n\n \
+OPTIONS:\n \
+-h              show this help\n \
+-I int/int      momentum of electrons. Sets: integer or half integer (required)\n \
+-J int/int      momentum of the nucleus. Sets: integer or half integer (required)\n \
+-F int/int      total momentum: I+J. Sets: integer or half integer (required)\n \
+-A real         A-hfs constant\n \
+-B real         B-hfs constant\n \
+-l real         wavelength of the transition\n\n";
+//-v              be verbose\n";
+
+        help+="I=0 or J=0 or I=1/2 or J=1/2 will return a 'div by 0' while\n\
+computing E2.\n\n";
+
+        help+="Please note that nuclei far away from the double magicity (±3 nucleons)\n\
+are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken into account.\nPair-Pair nucleus have I=0.\n\n";
+
+        help+="G. M. Wahlgren (1995) - DOI: 10.1086/175618\n\n";
+
+		int opt;
+		while((opt=getopt(argc, argv, "I:J:F:A:B:l:vh"))!=EOF) {
+            switch(opt) {
+                case 'I':
+                    sI=std::string(optarg);
+                    break;
+				case 'J':
+                    sJ=std::string(optarg);
+					break;
+				case 'F':
+                    sF=std::string(optarg);
+					break;
+				case 'A':
+                    A=std::stold(optarg);
+                    A_isempty=false;
+					break;
+				case 'B':
+                    B=std::stold(optarg);
+                    B_isempty=false;
+					break;
+				case 'l':
+					lambda=std::stold(optarg);
+                    lambda_isempty=false;
+					break;
+				case 'h':
+					std::cout << help;
+					exit(EXIT_SUCCESS);
+                	break;
+                case '?':
+					std::cout << help;
+					exit(EXIT_SUCCESS);
+                	break;
+				default:
+					std::cout << "error in args! Try -h.\n";
+					exit(EXIT_FAILURE);
+			}
+        }
+	}
+	else {
+		std::cerr << "not enough args. Type: " << argv[0] << " -h\n";
+		exit(EXIT_FAILURE);
+	}
+
+
+	// Convert std::string "n/m" into _frac<>(n,m)
+	std::size_t pos;
+
+    pos=sI.find('/');
+ 	if (pos!=std::string::npos)
+        I=_frac<>(std::stold( sI.substr(0,pos) ),
+                  std::stold( sI.substr( pos+1, sI.length()-1 )));
+    else I=_frac<>(std::stold(sI),1);
+
+    pos=sJ.find('/');
+ 	if (pos!=std::string::npos)
+        J=_frac<>(std::stold( sJ.substr(0,pos) ),
+                  std::stold( sJ.substr( pos+1, sJ.length()-1 )));
+    else J=_frac<>(std::stold(sJ),1);
+
+    pos=sF.find('/');
+ 	if (pos!=std::string::npos)
+        F=_frac<>(std::stold( sF.substr(0,pos) ),
+                  std::stold( sF.substr( pos+1, sF.length()-1 )));
+    else F=_frac<>(std::stold(sF),1);
+
+	std::cout << "Parameters:\n";
+	std::cout << "I="; I.show();
+    std::cout << " J="; J.show();
+    std::cout << " F="; F.show();
+    std::cout << "\n";
+    if (!A_isempty) std::cout << std::setprecision(6) << "A=" << A << "\n";
+    if (!B_isempty) std::cout << std::setprecision(6) << "B=" << B << "\n";
+    if (!lambda_isempty) std::cout << std::setprecision(6) << "wavelength: " << lambda << "\n";
+    std::cout << "\n";
+}
+
+// not usefull
+_io::~_io() { std::cout << "\nbye !\n"; }
+
+_frac<> _io::E_M1_divA() {
+     return F*(F+_frac<>(1,1))-J*(J+_frac<>(1,1))-I*(I+_frac<>(1,1))/_frac<>(2,1);
+}
+
+//
+// G. M. Wahlgren (1995)
+//
+
+double long _io::E_M1() {
+    double long p=this->E_M1_divA().F[0];
+    double long q=this->E_M1_divA().F[1];
+    return A*p/q;
+}
+
+_frac<> _io::E_E2_divB() {
+    if (!B_isempty) {
+        _frac<> C=F*(F+_frac<>(1,1))-J*(J+_frac<>(1,1))-I*(I+_frac<>(1,1));
+        _frac<> P=_frac<>(3,4)*C*(C-_frac<>(1,1))-I*(I+_frac<>(1,1))*J*(J-_frac<>(1,1));
+        _frac<> Q=_frac<>(2,1)*I*(_frac<>(2,1)*I-_frac<>(1,1))*J*(_frac<>(2,1)*J-_frac<>(1,1));
+        if (Q.F[0]==0 || Q.F[1]==0) {
+            std::cerr << "/!\\ div by 0 /!\\\n";
+            exit(EXIT_SUCCESS);
+        }
+        return C*P/Q;
+    }
+    else return _frac<>(0,1);
+}
+
+double long _io::E_E2() {
+    double long p=this->E_E2_divB().F[0];
+    double long q=this->E_E2_divB().F[1];
+    return B*p/q;
+}
+
+double long _io::lambda_shift() {
+       return lambda-2*PI*hbar*v_light/(E_M1()+E_E2());
+}
