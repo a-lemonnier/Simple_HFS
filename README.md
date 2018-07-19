@@ -5,10 +5,10 @@
 TODO:
 - Selection rules W6j
 - _frac<> W6j
-- fix hbar and energy dimensions
+- fix hbar² and energy
 
 Dependencies:
-- cmake
+- cmake or make: a makefile is in Simple_HFS/make
 - gcc / g++ : c++11
 
 ```
