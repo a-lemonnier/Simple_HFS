@@ -28,16 +28,24 @@ public:
 
     // return Deltalambda_hfs
     double long lambda_shift(void);
+    
+    // return gf_hfs
+    double long gf_hfs(void);
 
     bool A_isempty;
     bool B_isempty;
     bool lambda_isempty;
+    bool gf_hf_isempty;
+    int mode;
 
 private:
     _frac<> I, J, F;
+    _frac<> J0, F0; // |J0 F0> 
+    _frac<> J1, F1; // |J1 F1> 
 
     double long A, B;
     double long lambda;
+    double long gf_hf;
 };
 
 

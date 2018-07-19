@@ -3,80 +3,164 @@
 _io::_io(int argc, char** argv) {
 
     // Default values
+    mode=0;
     A=0; A_isempty=true;
     B=0; B_isempty=true;
     lambda=0; lambda_isempty=true;
+    gf_hf=true;
 
-    // convert char* into std::string via sI, sJ, sF;
+    // convert char* into std::string via sI, sJ, sF ...;
     std::string sI, sJ, sF;
-
+    std::string sJ0, sF0;
+    std::string sJ1, sF1;   
+    
     // Parse command line
- 	if (argc==2 || argc>6) {
+ 	if (argc>1) {
 		std::string help;
         std::string p_name(argv[0]);
 		help="Usage: "+p_name+" [OPTIONS]\n \
-	compute energy shift from quantum numbers and hfs constants if available \n\n \
+	compute energy shift and log(gf_hfs) from quantum numbers and hfs constants if available \n\n \
 OPTIONS:\n \
--h              show this help\n \
--I int/int      momentum of electrons. Sets: integer or half integer (required)\n \
--J int/int      momentum of the nucleus. Sets: integer or half integer (required)\n \
--F int/int      total momentum: I+J. Sets: integer or half integer (required)\n \
--A real         A-hfs constant\n \
--B real         B-hfs constant\n \
--l real         wavelength of the transition\n\n";
-//-v              be verbose\n";
+-h or --help     show this help\n\n \
+\
+-1 or --1        compute Energy or/and wavelength shift\n \
+                 with these additionnal options:\n \
+    --I int/int  momentum of electrons.\n \
+                 Sets: integer or half integer (required)\n \
+    --J int/int  momentum of the nucleus. \n \
+                 Sets: integer or half integer (required)\n \
+    --F int/int  total momentum: I+J. \n \
+                 Sets: integer or half integer (required)\n \
+    --A real     A-hfs constant\n \
+    --B real     B-hfs constant\n \
+    --l real     wavelength of the transition\n\n \
+\
+-2 or --2        compute hfs oscillator strength\n \
+                 |I,J0,F0> --> |I,J1,F1>\n \
+                 with these additionnal options:\n \
+    --I  int/int nuclear momentum (required)\n \
+    --J0 int/int (required)\n \
+    --J1 int/int (required)\n \
+    --F0 int/int (required)\n \
+    --F1 int/int (required)\n \
+    --gf real    hf oscillator strength log(gf_hf)\n\n";        
+
 
         help+="I=0 or J=0 or I=1/2 or J=1/2 will return a 'div by 0' while\n\
 computing E2.\n\n";
 
         help+="Please note that nuclei far away from the double magicity (±3 nucleons)\n\
-are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken into account.\nPair-Pair nucleus have I=0.\n\n";
+are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken into account.\n \
+Pair-Pair nucleus has I=0.\n\n";
 
         help+="G. M. Wahlgren (1995) - DOI: 10.1086/175618\n\n";
+        
+        static struct option long_options[] = {
+          {"1", no_argument, 0, '1'},
+          {"2", no_argument, 0, '2'},            
+          {"help", no_argument, 0, 'h'},
+          {"I", required_argument, 0, 'I'},
+          {"J", required_argument, 0, 'J'},
+          {"F", required_argument, 0, 'F'},
+          {"A", required_argument, 0, 'A'},
+          {"B", required_argument, 0, 'B'},
+          {"l", required_argument, 0, 'l'},
+          {"J0", required_argument, 0, 'g'},
+          {"F0", required_argument, 0, 'i'},
+          {"J1", required_argument, 0, 'j'},
+          {"F1", required_argument, 0, 'k'},
+          {"gf", required_argument, 0, 'm'},
+          {0, 0, 0, 0}
+        };
+        
+        unsigned int test1=0;
+        unsigned int test2=0;
 
-		int opt;
-		while((opt=getopt(argc, argv, "I:J:F:A:B:l:vh"))!=EOF) {
-            switch(opt) {
+		while(1) {
+                        
+            int opt;
+            int c = getopt_long (argc, argv, "12hI:J:F:A:B:l:",
+                       long_options, &opt);
+            if (c == -1) break;
+            
+            switch(c) {
+                case '1':
+                    mode=1;
+                    test1++;
+                    break;
+                case '2':
+                    mode=2;
+                    test2++;
+                    break;
                 case 'I':
+                    test1++;
+                    test2++;
                     sI=std::string(optarg);
                     break;
-				case 'J':
+                case 'J':
+                    test1++;
                     sJ=std::string(optarg);
-					break;
-				case 'F':
+                    break;
+                case 'F':
+                    test1++;
                     sF=std::string(optarg);
-					break;
-				case 'A':
+                    break;
+                case 'A':
                     A=std::stold(optarg);
                     A_isempty=false;
-					break;
-				case 'B':
+                    break;
+                case 'B':
                     B=std::stold(optarg);
                     B_isempty=false;
-					break;
-				case 'l':
-					lambda=std::stold(optarg);
+                    break;
+                case 'l':
+                    lambda=std::stold(optarg);
                     lambda_isempty=false;
-					break;
-				case 'h':
-					std::cout << help;
-					exit(EXIT_SUCCESS);
-                	break;
+                    break;
+                case 'g':
+                    test2++;
+                    sJ0=std::string(optarg);
+                    break;
+                case 'i':
+                    test2++;
+                    sF0=std::string(optarg);
+                    break;
+                case 'j':
+                    test2++;
+                    sJ1=std::string(optarg);
+                    break;
+                case 'k':
+                    test2++;
+                    sF1=std::string(optarg);
+                    break;
+                case 'm':
+                    test2++;
+                    gf_hf=std::stold(optarg);
+                    gf_hf_isempty=false;
+                    break;
+                case 'h':
+                    std::cout << help;
+                    exit(EXIT_SUCCESS);
+                    break;
                 case '?':
-					std::cout << help;
-					exit(EXIT_SUCCESS);
-                	break;
-				default:
-					std::cout << "error in args! Try -h.\n";
-					exit(EXIT_FAILURE);
-			}
+                    std::cout << help;
+                    exit(EXIT_SUCCESS);
+                    break;
+                default:
+                    std::cout << "error in args! Try -h.\n";
+                    exit(EXIT_FAILURE);
+                    
+            }                
+        }
+        if ((test1!=4 && mode==1) || (test2!=7 && mode==2)) {
+            std::cerr << "not enough args. Type: " << argv[0] << " -h\n";
+            exit(EXIT_FAILURE);
         }
 	}
 	else {
 		std::cerr << "not enough args. Type: " << argv[0] << " -h\n";
 		exit(EXIT_FAILURE);
 	}
-
 
 	// Convert std::string "n/m" into _frac<>(n,m)
 	std::size_t pos;

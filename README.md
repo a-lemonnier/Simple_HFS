@@ -6,9 +6,9 @@ Dependencies:
 - cmake
 - gcc / g++ : c++11
 
-
+```
 $ ls
-CMakeLists.txt  include  main.cpp  README
+- CMakeLists.txt  include  main.cpp  README
 
 $ cmake .
 -- The C compiler identification is GNU 7.3.0
@@ -36,12 +36,12 @@ Scanning dependencies of target shfs
 [ 75%] Building CXX object CMakeFiles/shfs.dir/include/cte.cpp.o
 [100%] Linking CXX executable shfs
 [100%] Built target shfs
-
+```
 
 ********
 * Run:
 ********
-
+```
 $ ./shfs -h
 Usage: ./shfs [OPTIONS]
  	compute energy shift from quantum numbers and hfs constants if available 
@@ -81,3 +81,4 @@ E_E2/B=0
 wavelength shift: 1625.25
 
 bye !
+```
