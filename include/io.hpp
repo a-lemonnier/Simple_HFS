@@ -9,6 +9,7 @@
 
 #include "basic_fracs.hpp" // fraction class made to avoid boost::rational
 #include "cte.hpp" // some constants
+#include "cgwr.hpp" // Wigner 6j 
 
 class _io : public _frac<> {
 public:
@@ -47,7 +48,6 @@ private:
     double long lambda;
     double long gf_hf;
 };
-
 
 
 #endif // IO_HPP

@@ -1,5 +1,10 @@
 #include "basic_fracs.hpp"
 
+// ***********
+// Constructors
+// ***********
+/*********************************************************************/
+
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>::_frac(_T1 a, _T2 b) {
     if (b==0) {
@@ -17,10 +22,13 @@ _frac<_T, _T1, _T2>::_frac() {
     this->F[1]=1;
     this->simplified=false;
 }
+/***********/
+
 
 // ***********
 // Operateurs
 // ***********
+/*********************************************************************/
 
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator= ( const _frac<_T, _T1, _T2> & frac ) {
@@ -161,10 +169,13 @@ bool _frac<_T, _T1, _T2>::operator!= ( const _frac& frac ) {
     return this->F[0]!=frac.F[0] || this->F[1]!=frac.F[0];    
 }
 
+/***********/
+
 
 // ***********
 // Method
 // ***********
+/*********************************************************************/
 
 template<class _T, class _T1, class _T2>
 void _frac<_T, _T1, _T2>::show() {
@@ -218,3 +229,5 @@ _frac<_T, _T1, _T2> & _frac<_T, _T1, _T2>::abs() {
     this->F[1]=fabs(this->F[1]);
     return *this;
 }
+
+/***********/

@@ -31,9 +31,10 @@ $ cmake .
 
 $ make
 Scanning dependencies of target shfs
-[ 25%] Building CXX object CMakeFiles/shfs.dir/main.cpp.o
-[ 50%] Building CXX object CMakeFiles/shfs.dir/include/io.cpp.o
-[ 75%] Building CXX object CMakeFiles/shfs.dir/include/cte.cpp.o
+[ 20%] Building CXX object CMakeFiles/shfs.dir/main.cpp.o
+[ 40%] Building CXX object CMakeFiles/shfs.dir/include/io.cpp.o
+[ 60%] Building CXX object CMakeFiles/shfs.dir/include/cte.cpp.o
+[ 80%] Building CXX object CMakeFiles/shfs.dir/include/cgwr.cpp.o
 [100%] Linking CXX executable shfs
 [100%] Built target shfs
 ```
@@ -80,4 +81,12 @@ are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken int
  Pair-Pair nucleus has I=0.
 
 G. M. Wahlgren (1995) - DOI: 10.1086/175618
+```
+> Examples:
+```
+$ ./shfs -1 -I 1/2 -J 1/2 -F 1 -A 0.1
+
+$ ./shfs -2 -I 1 --J0 1/2 --F0 1/2 --J1 1/2 --F1 3/2 --gf 0.1
+
+
 ```
