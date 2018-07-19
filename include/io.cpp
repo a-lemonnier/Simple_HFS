@@ -31,7 +31,7 @@ OPTIONS:\n \
 -h or --help     show this help\n\n \
 \
 -1 or --1        compute Energy or/and wavelength shift\n \
-                 with these additionnal options:\n \
+                 with these additional options:\n \
     --I int/int  momentum of electrons.\n \
                  Sets: integer or half integer (required)\n \
     --J int/int  momentum of the nucleus. \n \
@@ -44,7 +44,7 @@ OPTIONS:\n \
 \
 -2 or --2        compute hfs oscillator strength\n \
                  |I,J0,F0> --> |I,J1,F1>\n \
-                 with these additionnal options:\n \
+                 with these additional options:\n \
     --I  int/int nuclear momentum (required)\n \
     --J0 int/int (required)\n \
     --J1 int/int (required)\n \
