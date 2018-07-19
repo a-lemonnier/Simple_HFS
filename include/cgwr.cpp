@@ -180,37 +180,50 @@ double long _CGWR::W6j(void) {
     }
 
     
-//Selection rules
+//Selection rules //TODO ?
+// j_i has to obey to triangular delta below
 /*********************************************************************/
-//TODO
-
+    bool delta = [] (double long a, double long b, double long c) {
+        return (abs(a-b)<=c)&&(c<=a+b);
+    };
+    
+    bool test=delta(j1,j2,j3);
+    test &= delta(j1,l2,l3);
+    test &= delta(l1,j2,l3);
+    test &= delta(l1,l2,j3);
+    
+    test &= is_integer(j1+j2+j3);
+    test &= is_integer(l1+l2+l3);
+    
 /***********/
 
-    double long res, sum=0.0;
-    double long kmin, kmax;
-    kmin=std::max(
-            std::max(j1+j2+j3, j1+l2+l3),
-            std::max(l1+j2+l3, l1+l2+j3) );
-    kmax=std::min(
-            std::min(j1+j2+l1+l2, j2+j3+l2+l3),
-            j3+j1+l3+l1);
+    double long res=0, sum=0;
     
-    res= Delta(j1,j2,j3)
-                * Delta(j1,l2,l3)
-                * Delta(l1,j2,j3)
-                * Delta(l1,l2,j3);
-    //std::cout << "\n" <<   << "\n";
-
-    for(double long k=kmin; k<kmax+1;k++)
-        sum += pow(-1,k) * fact(k+1)
-                / fact(k-j1-j2-j3)
-                / fact(k-j1-l2-l3)
-                / fact(k-l1-j2-l3)
-                / fact(k-l1-l2-j3)
-                / fact(j1+j2+l1+l2-k)
-                / fact(j2+j3+l2+l3-k)
-                / fact(j3+j1+l3+l1-k);
-
+    if (test) {
+        double long kmin, kmax;
+        kmin=std::max(
+            std::max(j1+j2+j3, j1+l2+l3),
+                      std::max(l1+j2+l3, l1+l2+j3) );
+        kmax=std::min(
+            std::min(j1+j2+l1+l2, j2+j3+l2+l3),
+                      j3+j1+l3+l1);
+        
+        res= Delta(j1,j2,j3)
+        * Delta(j1,l2,l3)
+        * Delta(l1,j2,j3)
+        * Delta(l1,l2,j3);
+        //std::cout << "\n" <<   << "\n";
+        
+        for(double long k=kmin; k<kmax+1;k++)
+            sum += pow(-1,k) * fact(k+1)
+            / fact(k-j1-j2-j3)
+            / fact(k-j1-l2-l3)
+            / fact(k-l1-j2-l3)
+            / fact(k-l1-l2-j3)
+            / fact(j1+j2+l1+l2-k)
+            / fact(j2+j3+l2+l3-k)
+            / fact(j3+j1+l3+l1-k);
+    }
     return res*sum;
 }
 /***********/
