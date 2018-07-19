@@ -2,6 +2,11 @@
 * Build:
 ********
 
+TODO:
+- Selection rules W6j
+- _frac<> W6j
+- fix hbar and energy dimensions
+
 Dependencies:
 - cmake
 - gcc / g++ : c++11
