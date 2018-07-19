@@ -12,9 +12,13 @@ $ ls
 
 $ cmake .
 > -- The C compiler identification is GNU 7.3.0
+
 > -- The CXX compiler identification is GNU 7.3.0
+
 > -- Check for working C compiler: /usr/bin/cc
+
 > -- Check for working C compiler: /usr/bin/cc -- works
+
 > -- Detecting C compiler ABI info
 > -- Detecting C compiler ABI info - done
 > -- Detecting C compile features
