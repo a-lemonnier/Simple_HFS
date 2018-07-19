@@ -3,6 +3,7 @@
 ********
 
 TODO:
+- effective ngf_hfs
 - Selection rules W6j
 - _frac<> W6j
 - fix hbar² and energy

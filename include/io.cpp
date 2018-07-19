@@ -225,9 +225,11 @@ Pair-Pair nucleus has I=0.\n\n";
 /*********************************************************************/
     if (mode==1) {
         std::cout << "Parameters:\n";
-        std::cout << "I="; I.show();
-        std::cout << " J="; J.show();
-        std::cout << " F="; F.show();
+        std::cout << "- I="; I.show();
+        std::cout << "\n";
+        std::cout << "- J="; J.show();
+        std::cout << "\n";
+        std::cout << "- F="; F.show();
         std::cout << "\n";
         if (!A_isempty) std::cout << std::setprecision(6) << "A=" << A << "\n";
         if (!B_isempty) std::cout << std::setprecision(6) << "B=" << B << "\n";
@@ -235,13 +237,17 @@ Pair-Pair nucleus has I=0.\n\n";
     }
     if (mode==2) {
         std::cout << "Parameters:\n";
-        std::cout << "I="; I.show();
-        std::cout << " J0="; J0.show();
-        std::cout << " J1="; J1.show();
-        std::cout << " F0="; F0.show();
-        std::cout << " F1="; F0.show();
+        std::cout << "- I="; I.show();
         std::cout << "\n";
-        std::cout << std::setprecision(6) << "gf_hf=" << gf_hf << "\n"; 
+        std::cout << "- J0="; J0.show();
+        std::cout << "\n";
+        std::cout << "- J1="; J1.show();
+        std::cout << "\n";
+        std::cout << "- F0="; F0.show();
+        std::cout << "\n";
+        std::cout << "- F1="; F0.show();
+        std::cout << "\n";
+        std::cout << std::setprecision(6) << "- gf_hf=" << gf_hf << "\n"; 
     }
 
     std::cout << "\n";
