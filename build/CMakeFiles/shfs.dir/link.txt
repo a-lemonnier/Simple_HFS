@@ -1,1 +1,0 @@
-/usr/bin/c++    -rdynamic CMakeFiles/shfs.dir/main.cpp.o CMakeFiles/shfs.dir/include/io.cpp.o CMakeFiles/shfs.dir/include/cte.cpp.o CMakeFiles/shfs.dir/include/cgwr.cpp.o  -o shfs 
