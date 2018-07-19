@@ -39,46 +39,45 @@ Scanning dependencies of target shfs
 ```
 
 ********
-* Run:
+* Run help:
 ********
+
 ```
 $ ./shfs -h
 Usage: ./shfs [OPTIONS]
- 	compute energy shift from quantum numbers and hfs constants if available 
+ 	compute energy shift and log(gf_hfs) from quantum numbers and hfs constants if available 
 
  OPTIONS:
- -h              show this help
- -I int/int      momentum of electrons. Sets: integer or half integer (required)
- -J int/int      momentum of the nucleus. Sets: integer or half integer (required)
- -F int/int      total momentum: I+J. Sets: integer or half integer (required)
- -A real         A-hfs constant
- -B real         B-hfs constant
- -l real         wavelength of the transition
+ -h or --help     show this help
+
+ -1 or --1        compute Energy or/and wavelength shift
+ with these additionnal options:
+     --I int/int  momentum of electrons.
+                  Sets: integer or half integer (required)
+     --J int/int  momentum of the nucleus. 
+                  Sets: integer or half integer (required)
+     --F int/int  total momentum: I+J. 
+                  Sets: integer or half integer (required)
+     --A real     A-hfs constant
+     --B real     B-hfs constant
+     --l real     wavelength of the transition
+
+ -2 or --2        compute hfs oscillator strength
+                  |I,J0,F0> --> |I,J1,F1>
+ with these additionnal options:
+     --I  int/int nuclear momentum (required)
+     --J0 int/int (required)
+     --J1 int/int (required)
+     --F0 int/int (required)
+     --F1 int/int (required)
+     --gf real    hf oscillator strength log(gf_hf)
 
 I=0 or J=0 or I=1/2 or J=1/2 will return a 'div by 0' while
-computing E2 shift.
+computing E2.
 
 Please note that nuclei far away from the double magicity (±3 nucleons)
 are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken into account.
+ Pair-Pair nucleus has I=0.
 
 G. M. Wahlgren (1995) - DOI: 10.1086/175618
-
-$ echo "example"
-$ ./shfs -I 3/2 -J 1 -F 1 -A 0.1  -l 1625.25
-Parameters:
-I=3/2~1.5 J=1 F=1
-A=0.1
-wavelength: 1625.25
-
-HFS Energy shift:
--> Magnetic dipole
-E_M1/A=-15/8~-1.875
-
-E_M1=-0.1875
--> Electric quadrupole
-E_E2/B=0
-
-wavelength shift: 1625.25
-
-bye !
 ```
