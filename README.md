@@ -88,11 +88,39 @@ are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken int
 
 G. M. Wahlgren (1995) - DOI: 10.1086/175618
 ```
-> Examples:
+>
+> Dummy examples:
+>
+
 ```
 $ ./shfs -1 -I 1/2 -J 1/2 -F 1 -A 0.1
+Parameters:
+- I=1/2~0.5
+- J=1/2~0.5
+- F=1
+A=0.1
+
+HFS Energy shift:
+-> Magnetic dipole
+E_M1/A=7/8~0.875
+E_M1=0.087499999999999999999
+
+-> Electric quadrupole
+E_E2/B=0
+
+bye !
 
 $ ./shfs -2 -I 1 --J0 1/2 --F0 1/2 --J1 1/2 --F1 3/2 --gf 0.1
+Parameters:
+- I=1
+- J0=1/2~0.5
+- J1=1/2~0.5
+- F0=1/2~0.5
+- F1=1/2~0.5
+- gf_hf=0.1
 
+HFS gf=0.06666666666666666297
+
+bye !
 
 ```
