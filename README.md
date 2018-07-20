@@ -15,7 +15,11 @@ Dependencies:
 ```
 $ ls
 - CMakeLists.txt  include  main.cpp  README
+```
 
+With cmake:
+
+```
 $ cmake .
 -- The C compiler identification is GNU 7.3.0
 -- The CXX compiler identification is GNU 7.3.0
@@ -44,6 +48,18 @@ Scanning dependencies of target shfs
 [100%] Linking CXX executable shfs
 [100%] Built target shfs
 ```
+
+With make:
+
+```
+g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude   -c -o main.o main.cpp
+g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude -c -o include/cte.o  include/cte.cpp
+g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude -c -o include/io.o  include/io.cpp
+g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude -c -o include/cgwr.o  include/cgwr.cpp
+g++ main.o include/cte.o include/io.o include/cgwr.o include/cte.hpp include/io.hpp include/basic_fracs.hpp include/cgwr.hpp -std=c++11 -Iinclude  -o shfs
+rm -dfr main.o include/cte.o include/io.o include/cgwr.o
+```
+
 
 ********
 * Run help:
