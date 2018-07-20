@@ -183,7 +183,7 @@ double long _CGWR::W6j(void) {
 //Selection rules //TODO ?
 // j_i has to obey to triangular delta below
 /*********************************************************************/
-    bool delta = [] (double long a, double long b, double long c) {
+    auto delta = [] (double long a, double long b, double long c) {
         return (abs(a-b)<=c)&&(c<=a+b);
     };
     
