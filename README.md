@@ -8,13 +8,23 @@ TODO:
 - _frac<> W6j
 - fix hbar² and energy
 
+
 Dependencies:
 - cmake or make: a makefile is in Simple_HFS/make
 - gcc / g++ : c++11
 
+
 ```
-$ ls
-- CMakeLists.txt  include  main.cpp  README
+$ ls -R
+.:
+include  main.cpp  make  Makefile  README.md
+
+./include:
+basic_fracs.hpp  cgwr.cpp  CMakeLists.txt  cte.hpp  io.hpp
+basic_fracs.tpp  cgwr.hpp  cte.cpp         io.cpp
+
+./make:
+CMakeLists.txt  Makefile
 ```
 
 With cmake:
@@ -52,6 +62,7 @@ Scanning dependencies of target shfs
 With make:
 
 ```
+$ make
 g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude   -c -o main.o main.cpp
 g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude -c -o include/cte.o  include/cte.cpp
 g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude -c -o include/io.o  include/io.cpp
