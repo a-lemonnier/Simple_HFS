@@ -79,74 +79,90 @@ rm -dfr main.o include/cte.o include/io.o include/cgwr.o
 ```
 $ ./shfs -h
 Usage: ./shfs [OPTIONS]
- 	compute energy shift and log(gf_hfs) from quantum numbers and hfs constants if available 
+        compute HFS energy shift and effective HFS oscillator strength from quantum numbers and hfs constants if available 
 
  OPTIONS:
  -h or --help     show this help
 
  -1 or --1        compute Energy or/and wavelength shift
- with these additionnal options:
-     --I int/int  momentum of electrons.
+                  |I,J0,F0> --> |I,J1,F1> 
+                  with these additional options:
+     --I int/int  nuclear momentum.
                   Sets: integer or half integer (required)
-     --J int/int  momentum of the nucleus. 
+     --J0 int/int electronic momentum. 
                   Sets: integer or half integer (required)
-     --F int/int  total momentum: I+J. 
+     --F0 int/int total momentum: I+J0. 
                   Sets: integer or half integer (required)
-     --A real     A-hfs constant
-     --B real     B-hfs constant
-     --l real     wavelength of the transition
+     --J1 int/int (required)
+     --F1 int/int (required)
+     --A real     A-hfs constant of the transition (Mhz)
+     --B real     B-hfs constant of the transition (Mhz)
+     --l real     wavelength of the transition (Angstrom)
 
  -2 or --2        compute hfs oscillator strength
                   |I,J0,F0> --> |I,J1,F1>
- with these additionnal options:
-     --I  int/int nuclear momentum (required)
+                  with these additional options:
+     --I  int/int (required)
      --J0 int/int (required)
      --J1 int/int (required)
      --F0 int/int (required)
      --F1 int/int (required)
-     --gf real    hf oscillator strength log(gf_hf)
+     --gf real    HF oscillator strength log(gf_hf) (required)
 
 I=0 or J=0 or I=1/2 or J=1/2 will return a 'div by 0' while
 computing E2.
 
-Please note that nuclei far away from the double magicity (±3 nucleons)
-are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken into account.
+HFS shift is computed with the first order perturbation theory since coupling between electronic cloud magnetic field and nucleus momentum is weak.
+
+Please note that nuclei far away from the double magicity (±3 nucleons) and heavy elements are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken into account.
+
+ Examples: 
+ Ca: A=40  Z=20 N=20  Q=0    (barn) 
+ Hg: A=201 Z=80 N=121 Q=0.65 (b) 
+ U:  A=238 Z=92 N=146 Q=11   (b) 
+
  Pair-Pair nucleus has I=0.
 
-G. M. Wahlgren (1995) - DOI: 10.1086/175618
+ ref: 
+ Jie Wang et al. (2014) - DOI: 10.1088/0957-0233/25/3/035501 
+ R. D. Cowan, The Theory of Atomic Structure and Spectra (1981) 
+ G. M. Wahlgren (1995) - DOI: 10.1086/175618
+ https://www-nds.iaea.org/nuclearmoments
 ```
 >
 > Dummy examples:
 >
 
+Caesium 8S1/2: A=219 MHz
 ```
-$ ./shfs -1 -I 1/2 -J 1/2 -F 1 -A 0.1
+$ ./shfs -1 -I 2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
 Parameters:
-- I=1/2~0.5
-- J=1/2~0.5
-- F=1
-A=0.1
+- I=2
+- J0=1/2~0.5
+- J1=1/2~0.5
+- F0=4
+- F1=3
 
 HFS Energy shift:
 -> Magnetic dipole
-E_M1/A=7/8~0.875
-E_M1=0.087499999999999999999
+E_M1/A=4
 
 -> Electric quadrupole
 E_E2/B=0
 
 bye !
 
-$ ./shfs -2 -I 1 --J0 1/2 --F0 1/2 --J1 1/2 --F1 3/2 --gf 0.1
+$ ./shfs -2 -1 -I 2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 0.1
 Parameters:
-- I=1
+- I=2
 - J0=1/2~0.5
 - J1=1/2~0.5
-- F0=1/2~0.5
-- F1=1/2~0.5
+- F0=4
+- F1=3
 - gf_hf=0.1
 
-HFS gf=0.06666666666666666297
+-> HFS gf=0
+-> HFS log(gf)=-inf
 
 bye !
 
