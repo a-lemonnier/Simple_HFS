@@ -12,8 +12,9 @@ public:
     
     _T F[2];
     
-    _frac(_T1 a, _T2 b);
-    _frac();
+    _frac(_T1 a, _T2 b); // a/b
+    _frac(_T1 a);   // a/1
+    _frac(void); // 0/1
 
     void show(void);
     void simplify(void);

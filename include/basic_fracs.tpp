@@ -17,6 +17,13 @@ _frac<_T, _T1, _T2>::_frac(_T1 a, _T2 b) {
 }
 
 template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>::_frac(_T1 a) {
+    this->F[0]=a;
+    this->F[1]=1;
+    this->simplified=true;
+}
+
+template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>::_frac() {
     this->F[0]=0;
     this->F[1]=1;
@@ -179,12 +186,7 @@ bool _frac<_T, _T1, _T2>::operator!= ( const _frac& frac ) {
 
 template<class _T, class _T1, class _T2>
 void _frac<_T, _T1, _T2>::show() {
-    unsigned int prec=10;
-    if (sizeof(_T)==sizeof(double long)) prec=308;
-    if (sizeof(_T)==sizeof(long long)) prec=308;
-    if (sizeof(_T)==sizeof(double)) prec=308;
-    if (sizeof(_T)==sizeof(long)) prec=12;
-    if (sizeof(_T)==sizeof(int)) prec=12;
+    unsigned int prec=15;
     
     if  (this->F[1]!=1 &&  this->F[1]!=0) 
         std::cout << std::setprecision(prec) 

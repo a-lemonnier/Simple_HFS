@@ -9,7 +9,7 @@
 
 #include "basic_fracs.hpp" // fraction class made to avoid boost::rational
 #include "cte.hpp" // some constants
-#include "cgwr.hpp" // Wigner 6j 
+#include "cgwr.hpp" // Wigner 6j
 
 class _io : public _frac<> {
 public:
@@ -29,7 +29,7 @@ public:
 
     // return Deltalambda_hfs
     double long lambda_shift(void);
-    
+
     // return gf_hfs
     double long gf_hfs(void);
 
@@ -40,9 +40,9 @@ public:
     int mode;
 
 private:
-    _frac<> I, J, F;
-    _frac<> J0, F0; // |J0 F0> 
-    _frac<> J1, F1; // |J1 F1> 
+    _frac<> I;
+    _frac<> J0, F0; // |I J0 F0>
+    _frac<> J1, F1; // |I J1 F1> 
 
     double long A, B;
     double long lambda;
