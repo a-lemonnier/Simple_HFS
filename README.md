@@ -4,9 +4,7 @@
 
 TODO:
 - effective ngf_hfs
-- Selection rules W6j
 - _frac<> W6j
-- fix hbar² and energy
 
 
 Dependencies:
@@ -62,7 +60,7 @@ Scanning dependencies of target shfs
 With make:
 
 ```
-$ make
+$ make -j3
 g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude   -c -o main.o main.cpp
 g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude -c -o include/cte.o  include/cte.cpp
 g++ -std=c++11 -O3	 -Wall -pedantic -Iinclude -c -o include/io.o  include/io.cpp
@@ -84,23 +82,30 @@ Usage: ./shfs [OPTIONS]
  OPTIONS:
  -h or --help     show this help
 
- -1 or --1        compute Energy or/and wavelength shift
-                  |I,J0,F0> --> |I,J1,F1> 
+ -0 or --0        compute energy shift of the level for I⊗J0
                   with these additional options:
      --I int/int  nuclear momentum.
-                  Sets: integer or half integer (required)
+                  (required)
      --J0 int/int electronic momentum. 
-                  Sets: integer or half integer (required)
-     --F0 int/int total momentum: I+J0. 
-                  Sets: integer or half integer (required)
+                  (required)
+
+ -1 or --1        compute energy or/and wavelength shift
+                  |I,J0,F0> → |I,J1,F1> 
+                  with these additional options:
+     --I int/int  nuclear momentum.
+                  (required)
+     --J0 int/int electronic momentum. 
+                  (required)
+     --F0 int/int total momentum: I⊗J0. 
+                  (required)
      --J1 int/int (required)
      --F1 int/int (required)
      --A real     A-hfs constant of the transition (Mhz)
      --B real     B-hfs constant of the transition (Mhz)
-     --l real     wavelength of the transition (Angstrom)
+     --l real     wavelength of the transition (Å)
 
  -2 or --2        compute hfs oscillator strength
-                  |I,J0,F0> --> |I,J1,F1>
+                  |I,J0,F0> → |I,J1,F1>
                   with these additional options:
      --I  int/int (required)
      --J0 int/int (required)
@@ -109,19 +114,33 @@ Usage: ./shfs [OPTIONS]
      --F1 int/int (required)
      --gf real    HF oscillator strength log(gf_hf) (required)
 
-I=0 or J=0 or I=1/2 or J=1/2 will return a 'div by 0' while
-computing E2.
+ -3 or --3        compute energy shift of the level (J F)
+                  with these additional options:
+     --I int/int  nuclear momentum.
+                  Sets: integer or half integer (required)
+     --J0 int/int electronic momentum. 
+                  Sets: integer or half integer (required)
+     --F0 int/int total momentum: I⊗J0. 
+                  Sets: integer or half integer (required)
 
-HFS shift is computed with the first order perturbation theory since coupling between electronic cloud magnetic field and nucleus momentum is weak.
+The non-mandatory format int/int means p/q, ∀(p,q) ∈ N ⨯ ½N.
+
+HFS shift is computed with the first order perturbation theory since coupling between magnetic field of electronic cloud and nucleus momentum is weak.
 
 Please note that nuclei far away from the double magicity (±3 nucleons) and heavy elements are no more spherical (Q<0 or Q>0) and hfs constant B might have to be taken into account.
 
  Examples: 
- Ca: A=40  Z=20 N=20  Q=0    (barn) 
- Hg: A=201 Z=80 N=121 Q=0.65 (b) 
- U:  A=238 Z=92 N=146 Q=11   (b) 
+ Ca: A=40  Z=20 N=20  Q=0 b 
+ Hg: A=201 Z=80 N=121 Q=0.65 b 
+ U:  A=238 Z=92 N=146 Q=11 b 
 
- Pair-Pair nucleus has I=0.
+ Even-Even nucleus has I=0.
+
+Command examples:
+        ./shfs -0 -I 3/2 --J0 1
+        ./shfs -1 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
+        ./shfs -2 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 10
+        ./shfs -3 -I 1.5 --J0 0.5 --F0 4 --J1 0.5 --F1 3
 
  ref: 
  Jie Wang et al. (2014) - DOI: 10.1088/0957-0233/25/3/035501 
@@ -135,9 +154,28 @@ Please note that nuclei far away from the double magicity (±3 nucleons) and hea
 
 Caesium 8S1/2: A=219 MHz
 ```
-$ ./shfs -1 -I 2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
+$ ./shfs -0 -I 3/2 --J0 1
 Parameters:
-- I=2
+- I=3/2≃1.5
+- J0=1
+
+HFS Energy shift for an energy level:
+-> Magnetic dipole M1
+F=1/2≃0.5: ΔE_M1/A=-5/2≃-2.5
+F=3/2≃1.5: ΔE_M1/A=-1
+F=5/2≃2.5: ΔE_M1/A=3/2≃1.5
+
+
+-> Electric quadrupole E2 
+F=1/2≃0.5: ΔE_E2/B=5/4≃1.25
+F=3/2≃1.5: ΔE_E2/B=-1
+F=5/2≃2.5: ΔE_E2/B=1/4≃0.25
+
+bye !
+
+$ ./shfs -1 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
+Parameters:
+- I=7/2~3.5
 - J0=1/2~0.5
 - J1=1/2~0.5
 - F0=4
@@ -152,7 +190,7 @@ E_E2/B=0
 
 bye !
 
-$ ./shfs -2 -1 -I 2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 0.1
+$ ./shfs -2 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 10
 Parameters:
 - I=2
 - J0=1/2~0.5
@@ -162,7 +200,6 @@ Parameters:
 - gf_hf=0.1
 
 -> HFS gf=0
--> HFS log(gf)=-inf
 
 bye !
 
