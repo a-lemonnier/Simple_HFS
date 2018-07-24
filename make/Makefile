@@ -17,6 +17,8 @@ default: $(EXEC)
 $(EXEC): $(OBJ) $(DEP)
 	$(CXX) $^ $(LDFLAGS)  -o $(EXEC)
 	rm -dfr $(OBJ)
+	@echo "number of lines:"
+	@cat include/*.cpp include/*.hpp include/*.tpp *.cpp | wc -l
 
 %.o: %.cpp %.hpp 
 	$(CXX) $(CXXFLAGS) -c -o $@  $<

@@ -1,7 +1,7 @@
 #include "cgwr.hpp"
 
 // Token definitions
-/*********************************************************************/
+/***************************************/
 const unsigned int _CGWR::C_CG    =   1;
 const unsigned int _CGWR::C_W3j   =   2;
 const unsigned int _CGWR::C_W6j   =   3;
@@ -11,7 +11,7 @@ const unsigned int _CGWR::C_RACAH =   5;
 
 
 // Copy arguments
-/*********************************************************************/
+/***************************************/
 _CGWR::_CGWR(double long M[], unsigned int Symb) {
    
     if (Symb==C_CG) {
@@ -56,7 +56,7 @@ _CGWR& _CGWR::operator= ( const _CGWR& other ) {
 
 
 // Compute CG
-/*********************************************************************/
+/***************************************/
 double long _CGWR::CG() {
     if (selected_Symb!=C_CG) {
         std::cerr << "_CGWR::CG(): /!\\ invalid symbol.\n";
@@ -64,7 +64,7 @@ double long _CGWR::CG() {
     }
 
 // Selection rules
-/*********************************************************************/
+/***************************************/
     bool test = abs(m1)<=j1;
     test &= abs(m2)<=j2;
     test &= abs(j1-j2)<=j;
@@ -109,7 +109,7 @@ double long _CGWR::CG() {
 
 
 // Compute Wigner 3j
-/*********************************************************************/
+/***************************************/
 double long _CGWR::W3j(void) {
 
     if (selected_Symb!=C_W3j) {
@@ -171,7 +171,7 @@ double long _CGWR::W3j(void) {
 
 
 // Compute Wigner 6j
-/*********************************************************************/
+/***************************************/
 double long _CGWR::W6j(void) {
 
     if (selected_Symb!=C_W6j) {
@@ -182,7 +182,7 @@ double long _CGWR::W6j(void) {
     
 //Selection rules //TODO ?
 // j_i has to obey to triangular delta below
-/*********************************************************************/
+/***************************************/
     auto delta = [] (double long a, 
                      double long b, 
                      double long c) {
@@ -232,7 +232,7 @@ double long _CGWR::W6j(void) {
 
 
 // Compute Racah symbol
-/*********************************************************************/
+/***************************************/
 double long _CGWR::Racah(void) {
     return pow(-1,j1+j2+l1+l2)*W6j();
 }
@@ -240,7 +240,7 @@ double long _CGWR::Racah(void) {
 
 
 // Int Factorial
-/*********************************************************************/
+/***************************************/
 double long _CGWR::fact(double long n) {
     if (n<0 || !is_integer(n)) {
         std::cerr << "_CGWR::fact(): /!\\ bad number: "
@@ -257,7 +257,7 @@ double long _CGWR::fact(double long n) {
 
 
 // Triangle function
-/*********************************************************************/
+/***************************************/
 double long _CGWR::Delta(double long a,
                          double long b,
                          double long c) {
@@ -277,7 +277,7 @@ double long _CGWR::Delta(double long a,
 
 
 // Kronecker symbol
-/*********************************************************************/
+/***************************************/
 double long _CGWR::delta_k(double long a,
                             double long b) {
     double long res=0;
@@ -288,7 +288,7 @@ double long _CGWR::delta_k(double long a,
 
 
 // Misc. methods
-/*********************************************************************/
+/***************************************/
 bool _CGWR::is_integer(double long n) {
   return std::floor(n) == n;
 }

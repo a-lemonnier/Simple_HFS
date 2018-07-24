@@ -1,3 +1,6 @@
+[Buildset]
+BuildItems=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x01\x00\x00\x00\x0b\x00\x00\x00\x00\x01\x00\x00\x00\x14\x00S\x00i\x00m\x00p\x00l\x00e\x00_\x00H\x00F\x00S)
+
 [CMake]
 Build Directory Count=1
 Current Build Directory Index-Système hôte=0
@@ -11,6 +14,27 @@ Environment Profile=
 Extra Arguments=
 Install Directory=
 Runtime=Système hôte
+
+[Launch]
+Launch Configurations=Launch Configuration 0
+
+[Launch][Launch Configuration 0]
+Configured Launch Modes=execute
+Configured Launchers=nativeAppLauncher
+Name=Nouveau lanceur Binaire compilé
+Type=Native Application
+
+[Launch][Launch Configuration 0][Data]
+Arguments=-I 5/2 --J0 2
+Dependencies=@Variant(\x00\x00\x00\t\x00\x00\x00\x00\x00)
+Dependency Action=Nothing
+EnvironmentGroup=
+Executable=file:///home/gentoo/Prog/Simple_HFS
+External Terminal=konsole --noclose --workdir %workdir -e %exe
+Project Target=Simple_HFS,shfs
+Use External Terminal=false
+Working Directory=
+isExecutable=false
 
 [Project]
 VersionControlSupport=kdevgit

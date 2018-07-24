@@ -3,7 +3,7 @@
 
 /*** Constantes ***/
 /****   PDG 2014  ****/
-/*********************************************************************/
+/***************************************/
 const double long hbar=6.58211928e-16; // eV.s
 const double long k_B=8.6173324e-5; // Boltzmann Cte eV/K
 const double long m_e=5.10998928e3; // mass of an electron eV/c²

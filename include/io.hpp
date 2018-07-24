@@ -44,6 +44,8 @@ public:
     _frac<> J1, F1; // |I J1 F1> 
     
 private:
+    
+    
     double long A, B;
     double long lambda;
     double long gf_hf;

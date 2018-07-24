@@ -86,4 +86,3 @@ private:
 
 #endif // CGWR_HPP
 
-// The Theory of Atomic Structure and Spectra - Robert D. Cowan (1981)

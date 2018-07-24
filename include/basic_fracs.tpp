@@ -1,9 +1,10 @@
 #include "basic_fracs.hpp"
 
+
 // ***********
 // Constructors
 // ***********
-/*********************************************************************/
+/***************************************/
 
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>::_frac(_T1 a, _T2 b) {
@@ -35,7 +36,7 @@ _frac<_T, _T1, _T2>::_frac() {
 // ***********
 // Operateurs
 // ***********
-/*********************************************************************/
+/***************************************/
 
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator= ( const _frac<_T, _T1, _T2> & frac ) {
@@ -60,6 +61,17 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+ ( const _frac<_T, _T1, _T2> 
     return *res;    
 }
 
+
+template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+ ( _T1 x ) {
+    _frac* res=new _frac();
+    res->F[0]=this->F[0]+this->F[1]*x; 
+    res->F[1]=this->F[1];
+    res->simplify();
+    return *res;    
+}
+
+
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator- ( const _frac& frac ) {
     _frac* res=new _frac();
@@ -74,6 +86,15 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator- ( const _frac& frac ) {
 }
 
 template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator- ( _T1 x ) {
+    _frac* res=new _frac();
+    res->F[0]=this->F[0]-this->F[1]*x;
+    res->F[1]=this->F[1];    
+    res->simplify();
+    return *res;    
+}
+
+template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator* ( const _frac& frac ) {
     _frac* res=new _frac();
     res->F[0]=this->F[0]*frac.F[0];    
@@ -81,6 +102,16 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator* ( const _frac& frac ) {
     res->simplify();
     return *res;    
 }
+
+template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator* ( _T1 x ) {
+    _frac* res=new _frac();
+    res->F[0]=this->F[0]*x;
+    res->F[1]=this->F[1];    
+    res->simplify();
+    return *res;    
+}
+
 
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator^ ( _T2 n ) {
@@ -106,6 +137,19 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator/ ( const _frac<_T, _T1, _T2> 
 }
 
 template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator/ ( _T1 x ) {
+    _frac* res=new _frac();
+    res=this;
+    if (x!=0)
+        res->F[1]=this->F[1]*x;
+    else {
+        std::cerr << "./0!.";
+    }
+    res->simplify();
+    return *res;    
+}
+
+template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+= ( const _frac& frac ) {
     _T2 d=this->F[1]+frac.F[1];
     if (d==0) {
@@ -116,6 +160,12 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+= ( const _frac& frac ) {
     res->simplify();
     return *res;    
 }
+
+template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+= ( _T1 x) {
+    return *(this+x);    
+}
+
 
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator-= ( const _frac& frac ) {
@@ -130,6 +180,11 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator-= ( const _frac& frac ) {
 }
 
 template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator-= ( _T1 x) {
+    return *(this-x);    
+}
+
+template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator*= ( const _frac& frac ) {
     _T2 d=this->F[1]*frac.F[1];
     if (d==0) {
@@ -138,6 +193,18 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator*= ( const _frac& frac ) {
     }
     _frac* res= new _frac(this->F[0]*frac.F[0],d);
     res->simplify();
+    return *res;    
+}
+
+template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator*= ( _T1 x ) {
+    return *(this*x);    
+}
+
+template<class _T, class _T1, class _T2>
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator/= ( _T1 x ) {
+    _frac* res= new _frac(this->F[0],this->F[1]*x);
+    this->simplify();
     return *res;    
 }
 
@@ -161,10 +228,19 @@ bool _frac<_T, _T1, _T2>::operator> ( const _frac& frac ) {
 }
 
 template<class _T, class _T1, class _T2>
+bool _frac<_T, _T1, _T2>::operator> (_T2 x) {
+    return (this->F[0]/this->F[1]) > x;    
+}
+
+template<class _T, class _T1, class _T2>
 bool _frac<_T, _T1, _T2>::operator< ( const _frac& frac ) {
     return (this->F[0]/this->F[1]) < (frac.F[0]/frac.F[1]);    
 }
 
+template<class _T, class _T1, class _T2>
+bool _frac<_T, _T1, _T2>::operator< ( _T2 x ) {
+    return (this->F[0]/this->F[1]) < x;    
+}
 
 template<class _T, class _T1, class _T2>
 bool _frac<_T, _T1, _T2>::operator== ( const _frac& frac ) {
@@ -172,9 +248,20 @@ bool _frac<_T, _T1, _T2>::operator== ( const _frac& frac ) {
 }
 
 template<class _T, class _T1, class _T2>
+bool _frac<_T, _T1, _T2>::operator== ( _T2 x ) {
+    return this->val()==x;    
+}
+
+template<class _T, class _T1, class _T2>
 bool _frac<_T, _T1, _T2>::operator!= ( const _frac& frac ) {
     return this->F[0]!=frac.F[0] || this->F[1]!=frac.F[0];    
 }
+
+template<class _T, class _T1, class _T2>
+bool _frac<_T, _T1, _T2>::operator!= ( _T2 x ) {
+    return this->val()!=x;    
+}
+
 
 /***********/
 
@@ -182,24 +269,27 @@ bool _frac<_T, _T1, _T2>::operator!= ( const _frac& frac ) {
 // ***********
 // Method
 // ***********
-/*********************************************************************/
+/***************************************/
 
 template<class _T, class _T1, class _T2>
-void _frac<_T, _T1, _T2>::show() {
+std::string _frac<_T, _T1, _T2>::show() {
+    std::string str;
+    std::ostringstream buf;
     unsigned int prec=15;
     if  (this->F[1]!=1 &&  this->F[1]!=0) 
-        std::cout << std::setprecision(prec) 
+        buf << std::setprecision(prec) 
                     << static_cast<_T>(this->F[0]) 
                     << "/" << static_cast<_T>(this->F[1])
                     << "\u2243" 
                     << static_cast<_T>(this->F[0]/this->F[1]) ;
     if  (this->F[1]==1 && (std::floor(this->F[0]) ==  this->F[0]))
-        std::cout << std::setprecision(prec) 
+        buf << std::setprecision(prec) 
                     << static_cast<int>(this->F[0]);
     if  (this->F[1]==1 && (std::floor(this->F[0]) !=  this->F[0]))
-        std::cout << std::setprecision(prec) 
+        buf << std::setprecision(prec) 
                     << static_cast<_T>(this->F[0]);
-    if  (this->F[1]==0) std::cerr << "./0!.";
+    if  (this->F[1]==0) buf << "./0!.";
+    return buf.str();
 }
 
 template<class _T, class _T1, class _T2>
@@ -217,6 +307,11 @@ void _frac<_T, _T1, _T2>::simplify() {
     this->simplified=true;
 }
 
+template<class _T, class _T1, class _T2>
+_T _frac<_T, _T1, _T2>::val() {
+    return this->F[0]/this->F[1];
+}
+
 
 template<class _T, class _T1, class _T2> 
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::str_to_frac(const std::string &str) {
@@ -228,8 +323,6 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::str_to_frac(const std::string &str) {
                 else *res=_frac<>(std::stold(str));
     return *res;
 }
-
-
 
 template<class _T, class _T1, class _T2>
 _T _frac<_T, _T1, _T2>::gcd(_T1 a, _T2 b) {
@@ -249,4 +342,39 @@ _frac<_T, _T1, _T2> & _frac<_T, _T1, _T2>::abs() {
     return *this;
 }
 
+
+/***********/
+
+
+// ***********
+// Symmetry of operators
+// ***********
+/***************************************/
+
+template<typename _TT, typename _TT1, typename _TT2, typename _TT3>
+_frac<_TT,_TT1,_TT2> operator+(_TT3 x, const _frac<_TT,_TT1,_TT2> &frac) {
+    _frac<_TT,_TT1,_TT2>* res=new _frac<_TT,_TT1,_TT2>();
+    res->F[0]=frac.F[0]+frac.F[1]*x;
+    res->F[1]=frac.F[1];
+    res->simplify();    
+    return *res;
+}
+
+template<typename _TT, typename _TT1, typename _TT2, typename _TT3>
+_frac<_TT,_TT1,_TT2> operator-(_TT3 x, const _frac<_TT,_TT1,_TT2> &frac) {
+    _frac<_TT,_TT1,_TT2>* res=new _frac<_TT,_TT1,_TT2>();
+    res->F[0]=frac.F[0]-frac.F[1]*x;
+    res->F[1]=frac.F[1];
+    res->simplify();    
+    return *res;
+}
+
+template<typename _TT, typename _TT1, typename _TT2, typename _TT3>
+_frac<_TT,_TT1,_TT2>& operator*(_TT3 x, const _frac<_TT,_TT1,_TT2> &frac) {
+    _frac<_TT,_TT1,_TT2>* res=new _frac<_TT,_TT1,_TT2>();
+    res->F[0]=frac.F[0]*x;
+    res->F[1]=frac.F[1];
+    res->simplify();    
+    return *res;
+}
 /***********/

@@ -2,7 +2,7 @@
 #define CTE_HPP
 
 /*** Constantes ***/
-/*********************************************************************/
+/***************************************/
 extern const double long hbar;
 extern const double long k_B;
 extern const double long m_e;
