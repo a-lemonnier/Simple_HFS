@@ -65,6 +65,11 @@ int main(int argc, char** argv) {
         std::cout  << std::setprecision(20) << "-> HFS gf=" << io.gf_hfs() << "\n";
         if (io.gf_hfs()!=0)
         std::cout  << std::setprecision(5) << "-> HFS log(gf)=" << log(io.gf_hfs()) << "\n";
+        
+        std::cout  << std::setprecision(20) << "-> effective HFS ngf=" << io.gf_hfs()/(2*io.I.F[0]/io.I.F[1]+1) << "\n";
+        if (io.gf_hfs()!=0)
+        std::cout  << std::setprecision(5) << "-> effective HFS log(ngf)=" << log(io.gf_hfs()/(2*io.I.F[0]/io.I.F[1]+1)) << "\n";
+        
     }
     if (io.mode==3) {
         std::cout << "HFS Energy shift for an energy level:\n";

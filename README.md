@@ -3,8 +3,8 @@
 ********
 
 TODO:
-- effective ngf_hfs
 - _frac<> W6j
+- clean code
 
 
 Dependencies:
