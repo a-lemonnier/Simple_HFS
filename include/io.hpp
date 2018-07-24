@@ -39,11 +39,11 @@ public:
     bool gf_hf_isempty;
     int mode;
 
-private:
     _frac<> I;
     _frac<> J0, F0; // |I J0 F0>
     _frac<> J1, F1; // |I J1 F1> 
-
+    
+private:
     double long A, B;
     double long lambda;
     double long gf_hf;
