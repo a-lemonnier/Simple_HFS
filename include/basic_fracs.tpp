@@ -217,6 +217,20 @@ void _frac<_T, _T1, _T2>::simplify() {
     this->simplified=true;
 }
 
+
+template<class _T, class _T1, class _T2> 
+_frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::str_to_frac(const std::string &str) {
+    _frac* res= new _frac();
+     std::size_t pos=str.find('/');
+     if (pos!=std::string::npos)
+                *res=_frac<>(std::stold( str.substr(0,pos) ),
+                           std::stold( str.substr( pos+1, str.length()-1 )));
+                else *res=_frac<>(std::stold(str));
+    return *res;
+}
+
+
+
 template<class _T, class _T1, class _T2>
 _T _frac<_T, _T1, _T2>::gcd(_T1 a, _T2 b) {
     _T c = fmodl(a,b);
