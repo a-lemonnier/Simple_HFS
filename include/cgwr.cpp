@@ -49,8 +49,22 @@ _CGWR::_CGWR(double long M[], unsigned int Symb) {
 /***********/
 
 
-_CGWR& _CGWR::operator= ( const _CGWR& other ) {
-    //TODO
+_CGWR& _CGWR::operator= ( const _CGWR &A ) {
+    if (this != &A) {
+     this->j=A.j;   
+     this->j1=A.j1;
+     this->j2=A.j2;
+     this->j3=A.j3;
+     this->l=A.l;   
+     this->l1=A.l1;
+     this->l2=A.l2;
+     this->l3=A.l3;
+     this->m=A.m;   
+     this->m1=A.m1;
+     this->m2=A.m2;
+     this->m3=A.m3; 
+     this->selected_Symb=A.selected_Symb;
+    }
     return *this;
 }
 
@@ -180,7 +194,7 @@ double long _CGWR::W6j(void) {
     }
 
     
-//Selection rules //TODO ?
+//Selection rules
 // j_i has to obey to triangular delta below
 /***************************************/
     auto delta = [] (double long a, 
@@ -195,7 +209,7 @@ double long _CGWR::W6j(void) {
     test &= delta(l1,l2,j3);
     
     test &= is_integer(j1+j2+j3);
-    test &= is_integer(l1+l2+l3);
+    //test &= is_integer(l1+l2+l3);
     
 /***********/
 
@@ -212,9 +226,8 @@ double long _CGWR::W6j(void) {
         
         res= Delta(j1,j2,j3)
         * Delta(j1,l2,l3)
-        * Delta(l1,j2,j3)
+        * Delta(l1,j2,l3)
         * Delta(l1,l2,j3);
-        //std::cout << "\n" <<   << "\n";
         
         for(double long k=kmin; k<kmax+1;k++)
             sum += pow(-1,k) * fact(k+1)
@@ -247,10 +260,8 @@ double long _CGWR::fact(double long n) {
                   << n << ".\n";
         exit(EXIT_FAILURE);
     }
-    double long res=1;
-    for(double long i=1;i<n+1;i++)
-        res*=i;
-    return res;
+    if (n==0) return 1;
+    return n*fact(n-1);
     // ::math::factorial<double long >(abs(n));
 }
 /***********/
@@ -265,7 +276,6 @@ double long _CGWR::Delta(double long a,
                     * fact(a-b+c)
                     * fact(-a+b+c)
                     / fact(a+b+c+1);
-
     if (res<0) {
         std::cerr << "_CGWR::Delta(): /!\\ complex number: sqrt(" 
                   << res << ").\n";
@@ -279,10 +289,8 @@ double long _CGWR::Delta(double long a,
 // Kronecker symbol
 /***************************************/
 double long _CGWR::delta_k(double long a,
-                            double long b) {
-    double long res=0;
-    if (a==b) res=1;
-    return res;
+                           double long b) {
+    return a==b;
 }
 /***********/
 

@@ -19,13 +19,13 @@ public:
 
     // return DeltaE_M1/(A*hbar)
     _frac<> E_M1_divA(void);
-    // return E_M1/hbar
-    double long E_M1(void);
+    // return (E'_M1-E_M1)/hbar
+    double long DE_M1(void);
 
     // return DeltaE_E2/(B*hbar)
     _frac<> E_E2_divB(void);
     // return E_E2/hbar
-    double long E_E2(void);
+     double long DE_E2(void);
 
     // return Deltalambda_hfs
     double long lambda_shift(void);
@@ -33,20 +33,29 @@ public:
     // return gf_hfs
     double long gf_hfs(void);
 
-    bool A_isempty;
-    bool B_isempty;
+    // align output
+    static std::string centerstr(const std::string &s);
+    static std::string centerstr(double long x);
+    static std::string rightstr(const std::string &s);
+    static std::string rightstr(double long x);
+    
+    bool A0_isempty;
+    bool B0_isempty;
+    bool A1_isempty;
+    bool B1_isempty;
     bool lambda_isempty;
     bool gf_hf_isempty;
     int mode;
 
+    double long A0, B0;
+    
     _frac<> I;
     _frac<> J0, F0; // |I J0 F0>
     _frac<> J1, F1; // |I J1 F1> 
     
 private:
-    
-    
-    double long A, B;
+
+    double long A1, B1;
     double long lambda;
     double long gf_hf;
 };

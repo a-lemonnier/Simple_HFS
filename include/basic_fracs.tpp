@@ -1,6 +1,5 @@
 #include "basic_fracs.hpp"
 
-
 // ***********
 // Constructors
 // ***********
@@ -30,6 +29,7 @@ _frac<_T, _T1, _T2>::_frac() {
     this->F[1]=1;
     this->simplified=false;
 }
+
 /***********/
 
 
@@ -61,7 +61,6 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+ ( const _frac<_T, _T1, _T2> 
     return *res;    
 }
 
-
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+ ( _T1 x ) {
     _frac* res=new _frac();
@@ -70,7 +69,6 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+ ( _T1 x ) {
     res->simplify();
     return *res;    
 }
-
 
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator- ( const _frac& frac ) {
@@ -111,7 +109,6 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator* ( _T1 x ) {
     res->simplify();
     return *res;    
 }
-
 
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator^ ( _T2 n ) {
@@ -165,7 +162,6 @@ template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator+= ( _T1 x) {
     return *(this+x);    
 }
-
 
 template<class _T, class _T1, class _T2>
 _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::operator-= ( const _frac& frac ) {
@@ -262,7 +258,6 @@ bool _frac<_T, _T1, _T2>::operator!= ( _T2 x ) {
     return this->val()!=x;    
 }
 
-
 /***********/
 
 
@@ -324,15 +319,31 @@ _frac<_T, _T1, _T2>& _frac<_T, _T1, _T2>::str_to_frac(const std::string &str) {
     return *res;
 }
 
+template<class _T, class _T1, class _T2> 
+bool _frac<_T, _T1, _T2>::is_number(const std::string &str) {
+    bool test=!str.empty();
+    // maybe useless
+    test&= (std::find_if(str.begin(), str.end(), [](char c) { return !std::isdigit(c);}) == str.end());
+    
+    std::size_t pos=str.find('/');
+    if (pos!=std::string::npos) {
+                std::string p=str.substr(0,pos);
+                std::string q=str.substr( pos+1, str.length()-1 );
+                test|= ( std::find_if(p.begin(), p.end(), [](char c) { return !std::isdigit(c);}) == p.end());
+                test|= ( std::find_if(q.begin(), q.end(), [](char c) { return !std::isdigit(c);}) == q.end());
+    }
+    return test;
+}
+
 template<class _T, class _T1, class _T2>
 _T _frac<_T, _T1, _T2>::gcd(_T1 a, _T2 b) {
     _T c = fmodl(a,b);
-      while(c != 0) {
-      a = b;
-      b = c;
-      c = fmodl(a,b);
+    while(c!=0) {
+        a = b;
+        b = c;
+        c = fmodl(a,b);
     }
-  return b;
+    return b;
 }
 
 template<class _T, class _T1, class _T2>
@@ -377,4 +388,5 @@ _frac<_TT,_TT1,_TT2>& operator*(_TT3 x, const _frac<_TT,_TT1,_TT2> &frac) {
     res->simplify();    
     return *res;
 }
+
 /***********/

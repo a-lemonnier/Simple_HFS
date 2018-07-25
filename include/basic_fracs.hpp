@@ -6,9 +6,9 @@
 #include <iomanip>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 template<class _T, class _T1, class _T2> class _frac;
-
 
 // ***********
 // Symmetry of operators
@@ -40,6 +40,7 @@ public:
     
     // convert string "p/q" to _frac<>(p,q)
     static _frac<_T, _T1, _T2>& str_to_frac(const std::string &str);
+    static bool is_number(const std::string &str);
     
     _frac& abs(void);
     

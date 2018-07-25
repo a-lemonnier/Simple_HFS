@@ -5,8 +5,10 @@ _io::_io(int argc, char** argv) {
     // Default values
     /***************************************/
     mode=-1;
-    A=0; A_isempty=true;
-    B=0; B_isempty=true;
+    A0=0; A0_isempty=true;
+    B0=0; B0_isempty=true;
+    A1=0; A1_isempty=true;
+    B1=0; B1_isempty=true;
     lambda=0; lambda_isempty=true;
     gf_hf=true;
     /***********/
@@ -14,9 +16,9 @@ _io::_io(int argc, char** argv) {
     
     // convert char* into std::string via sI, sJ, sF ...;
     /***************************************/
-    std::string sI;
-    std::string sJ0, sF0;
-    std::string sJ1, sF1;
+    std::string sI="0";
+    std::string sJ0="0", sF0="0";
+    std::string sJ1="0", sF1="0";
     /***********/
     
     
@@ -33,7 +35,9 @@ OPTIONS:\n \
 -0 or --0        compute energy shift of the level for I\u2297J0\n \
                  with these additional options:\n \
         --I int/int  nuclear momentum (required).\n \
-        --J0 int/int electronic momentum (required). \n\n \
+        --J0 int/int electronic momentum (required). \n \
+        --A0 real    A-HFS constant of the level\n \
+        --B0 real    B-HFS constant of the level\n\n \
 \
 -1 or --1        compute energy or/and wavelength shift\n \
                  |I,J0,F0> \u2192 |I,J1,F1> \n \
@@ -43,8 +47,10 @@ OPTIONS:\n \
         --F0 int/int total momentum: I\u2297J0 (required). \n \
         --J1 int/int (required)\n \
         --F1 int/int (required)\n \
-        --A real     A-hfs constant of the transition (Mhz)\n \
-        --B real     B-hfs constant of the transition (Mhz)\n \
+        --A0 real    A-HFS constant of the lower/upper level (required)\n \
+        --B0 real    B-HFS constant of the lower/upper level\n \
+        --A1 real    A-HFS constant of the upper/lower level (required)\n \
+        --B1 real    B-HFS constant of the upper/lower level\n \
         --l real     wavelength of the transition (\u00C5)\n\n \
 \
 -2 or --2        compute hfs oscillator strength\n \
@@ -61,7 +67,9 @@ OPTIONS:\n \
                  with these additional options:\n \
         --I int/int  (required).\n \
         --J0 int/int (required). \n \
-        --F0 int/int I\u2297J0 (required). \n\n";
+        --F0 int/int I\u2297J0 (required). \n \
+        --A0 real    A-HFS constant of the level\n \
+        --B0 real    B-HFS constant of the level\n\n";
         
         help+="The non-mandatory format int/int means p/q, \u2200(p,q) \u2208 N \u2A2F \u00BDN.\n\n";
         
@@ -69,13 +77,19 @@ OPTIONS:\n \
 magnetic field of electronic cloud and nucleus momentum is weak. \
 Wigner 6j symbols are used to facilitate the manipulation of spherical harmonics in the matrix elements computation. \n\n";
         
-        help+="Please note that nuclei far away from the double magicity (±3 nucleons) and heavy elements \
+        help+="A and B are independent from F: A=A(2S+1^L_J). They are expressed in MHz or mK. Thus one has to multiply the energy by 1e6*h or 1e-3*k_B.\n\n";
+               
+        help+="Note that nuclei far away from the double magicity (±3 nucleons) and heavy elements \
 are no more spherical (Q<0 or Q>0) and HFS constant B might have to be taken into account.\n\n \
 Examples: \n \
     Ca: A=40  Z=20 N=20  Q=0 b \n \
     Hg: A=201 Z=80 N=121 Q=0.65 b \n \
-    U:  A=238 Z=92 N=146 Q=11 b \n\n \
+    U:  A=238 Z=92 N=146 Q=11 b \n\n\
 Even-Even nucleus has I=0.\n\n";
+        
+        help+="Notations:\n \
+<H> \u2250 <nIJF|H|nIJF>\n \
+<\u0394H> \u2250 E(I,J',F') - E(I,J,F)\n\n";
         
         help+="Command examples:\n \
 ./shfs -0 -I 3/2 --J0 1\n \
@@ -96,8 +110,10 @@ https://www-nds.iaea.org/nuclearmoments\n";
             {"3", no_argument, 0, '3'},
             {"help", no_argument, 0, 'h'},
             {"I", required_argument, 0, 'I'},
-            {"A", required_argument, 0, 'A'},
-            {"B", required_argument, 0, 'B'},
+            {"A0", required_argument, 0, 'A'},
+            {"B0", required_argument, 0, 'B'},
+            {"A1", required_argument, 0, 'C'},
+            {"B1", required_argument, 0, 'D'},
             {"l", required_argument, 0, 'l'},
             {"J0", required_argument, 0, 'a'},
             {"F0", required_argument, 0, 'b'},
@@ -114,6 +130,18 @@ https://www-nds.iaea.org/nuclearmoments\n";
         unsigned int test1=0;
         unsigned int test2=0;
         unsigned int test3=0;
+        /***********/
+        
+        // Lambda function seems justified here:
+        // exit if the given real is not a number
+        /***************************************/
+        auto is_real=[](char* arg) {
+            std::string str(arg);
+            if (!std::all_of(str.begin(), str.end(), [](char c){return std::isdigit(c) || c=='.' || c=='-' || c=='+';})){
+                std::cerr << "\u26a0 non-real in the command line: "<< str <<"\n";
+                exit(EXIT_FAILURE);                        
+            }
+        };
         /***********/
         
         while(1) {
@@ -147,14 +175,29 @@ https://www-nds.iaea.org/nuclearmoments\n";
                     sI=std::string(optarg);
                     break;
                 case 'A':
-                    A=std::stold(optarg);
-                    A_isempty=false;
+                    is_real(optarg);
+                    test1++;
+                    A0=std::stold(optarg);
+                    A0_isempty=false;
                     break;
                 case 'B':
-                    B=std::stold(optarg);
-                    B_isempty=false;
+                    is_real(optarg);
+                    B0=std::stold(optarg);
+                    B0_isempty=false;
+                    break;
+                case 'C':
+                    is_real(optarg);
+                    test1++;
+                    A1=std::stold(optarg);
+                    A1_isempty=false;
+                    break;
+                case 'D':
+                    is_real(optarg);
+                    B1=std::stold(optarg);
+                    B1_isempty=false;
                     break;
                 case 'l':
+                    is_real(optarg);
                     lambda=std::stold(optarg);
                     lambda_isempty=false;
                     break;
@@ -182,6 +225,7 @@ https://www-nds.iaea.org/nuclearmoments\n";
                     sF1=std::string(optarg);
                     break;
                 case 'g':
+                    is_real(optarg);
                     test2++;
                     gf_hf=std::stold(optarg);
                     gf_hf_isempty=false;
@@ -198,9 +242,9 @@ https://www-nds.iaea.org/nuclearmoments\n";
                     std::cout << "\u26a0 error in args! Try -h.\n";
                     exit(EXIT_FAILURE);
             }
-        }        
+        }
         if ((test0!=3 && mode==0) ||
-            (test1<5 && mode==1) || 
+            (test1<7  && mode==1) || 
             (test2!=7 && mode==2) || 
             (test3!=4 && mode==3)) {
                 std::cerr << "\u26a0 not enough args. Type: " <<  argv[0] << " -h\n";
@@ -213,6 +257,24 @@ https://www-nds.iaea.org/nuclearmoments\n";
     }
     /***********/
     
+    if (mode==1 && A0_isempty && A1_isempty) {
+        std::cerr << "\u26a0 A-HFS constants are mandatory in this mode: A0 and A1\n";
+        exit(EXIT_FAILURE);
+    }
+    
+    
+    // Check if args are numbers
+    /***************************************/
+    if (!_frac::is_number(sI) ||
+        !_frac::is_number(sJ0)||
+        (mode==0 && !_frac::is_number(sF0)) ||
+        ((mode==0 || mode==3) && !_frac::is_number(sJ1)) ||
+        ((mode==0 || mode==3) && !_frac::is_number(sF1)) ) {
+        std::cerr << "\u26a0 bad quantum number in the command line\n";
+        exit(EXIT_FAILURE);
+    }    
+    /***********/
+
     
     // Convert std::string "n/m" into _frac<>(n,m)
     /***************************************/
@@ -227,6 +289,24 @@ https://www-nds.iaea.org/nuclearmoments\n";
     /***********/
     
     
+    // Check if quantum numbers are half integer
+    /***************************************/
+    auto is_halfint=[](_frac<> f) {
+        return std::floor(f.val()*2) == 2*f.val();
+    };
+    
+    if (!is_halfint(I) ||
+        !is_halfint(J0) ||
+        !is_halfint(J1) ||
+        !is_halfint(F0) ||
+        !is_halfint(F1)) {
+        std::cerr << "\u26a0 quantum numbers are not integer or half integer\n";
+        exit(EXIT_FAILURE);
+    }
+    
+    /***********/
+
+    
     // Show parameters
     /***************************************/
     std::cout << "Parameters:\n";
@@ -240,13 +320,30 @@ https://www-nds.iaea.org/nuclearmoments\n";
         std::cout << "- F1=" << F1.show() << "\n";
     
     if (mode==1) {
-        if (!A_isempty) std::cout << std::setprecision(6) << "- A=" << A << "\n";
-        if (!B_isempty) std::cout << std::setprecision(6) << "- B=" << B << "\n";
-        if (!lambda_isempty) std::cout << std::setprecision(6) << "- wavelength: " << lambda << " \u00C5\n";
+        if (!B0_isempty &&
+            !B1_isempty) 
+            std::cout << std::setprecision(6) 
+            << "- A0=" << A0 
+            << " - B0=" << B0
+            << " - A1=" << A1
+            << " - B1=" << B1
+            << "\n";
+        else {
+            std::cout << std::setprecision(6) 
+            << "- A0=" << A0 
+            << " - A1=" << A1
+            << "\n";
+        }
+        if (!lambda_isempty) 
+            std::cout << std::setprecision(6) 
+            << "- wavelength: " 
+            << lambda << " \u00C5\n";
     }
     if (mode==2)
-        std::cout << std::setprecision(6) << "- gf_hf=" << gf_hf << "\n";
-    
+        std::cout << std::setprecision(6) 
+        << "- gf_hf=" 
+        << gf_hf 
+        << "\n";
     std::cout << "\n";
     /***********/
 }
@@ -255,96 +352,84 @@ https://www-nds.iaea.org/nuclearmoments\n";
 _io::~_io() { std::cout << "\nbye !\n"; }
 
 _frac<> _io::E_M1_divA() {
-    _frac<> C0(0);
-    _frac<> C1(0);
-    if (mode!=0 && mode!=3) {
-        if (((F0-F1).abs().val()==1 || (F0-F1).val()==0) &&
-            ((J0-J1).abs().val()==1 || (J0-J1).val()==0)) {
-            C0=(F0*(F0+1)-J0*(J0+1)-I*(I+1)); 
-            C1=(F1*(F1+1)-J1*(J1+1)-I*(I+1));
-            }
-            else {
-                std::cout << " - forbidden transition: |\u0394F|=" 
-                << (F0-F1).abs().show() 
-                << " |\u0394J|=" 
-                << (J0-J1).abs().show() 
-                << " - ";
-                return _frac<>();
-            }
-            return (C0-C1)/2;
-    }
-    else {
         return (F0*(F0+1)-J0*(J0+1)-I*(I+1))/2;
-    }
 }
 
-// G. M. Wahlgren (1995)
-
-double long _io::E_M1() {
-    return A*E_M1_divA().val();
+double long _io::DE_M1() {
+    _frac<> C0(0);
+    _frac<> C1(0);
+    if (((F0-F1).abs().val()==1 || (F0-F1).val()==0) &&
+        ((J0-J1).abs().val()==1 || (J0-J1).val()==0)) {
+        C0=(F0*(F0+1)-J0*(J0+1)-I*(I+1)); 
+        C1=(F1*(F1+1)-J1*(J1+1)-I*(I+1));
+        }
+        else {
+            std::cout << " - forbidden transition: |\u0394F|=" 
+            << (F0-F1).abs().show() 
+            << " |\u0394J|=" 
+            << (J0-J1).abs().show() 
+            << " - ";
+            return 0;
+        }
+        return (A1*C1.val()-A0*C0.val())/2;
 }
 
 _frac<> _io::E_E2_divB() {
     _frac<> C0(1), P0(0), Q0(1);
-    _frac<> C1(1), P1(0), Q1(1);
-    
-    if (mode!=0 && mode!=3) {
-        
-        if (I.val()==0 || 
-            I.val()==0.5 ||
-            J0.val()==0.5 || 
-            J1.val()==0.5 ) 
-            return _frac<>();
-        else {
-            if (((F0-F1).abs().val()==1 || (F0-F1).val()==0) &&
-                ((J0-J1).abs().val()==1 || (J0-J1).val()==0) ) {
-                
-                // B*((3/4)*C(C+1)-I(I+1)*J(J+1))/2
-               /***************************************/
-                C0=F0*(F0+1)-J0*(J0+1)-I*(I+1);
-                P0=_frac<>(3,4)*C0*(C0+1)-I*(I+1)*J0*(J0+1);
-                Q0=2*I*(2*I-1)*J0*(2*J0-1);
-            
-                C1=F1*(F1+1)-J1*(J1+1)-I*(I+1);
-                P1=_frac<>(3,4)*C1*(C1-1)-I*(I+1)*J1*(J1+1);
-                Q1=2*I*(2*I-1)*J1*(2*J1-1);
-                /***********/
-                }
-                else {
-                    std::cout << " - forbidden transition: |\u0394F|=" 
-                    << (F0-F1).abs().show() 
-                    << " |\u0394J|=" 
-                    << (J0-J1).abs().show() 
-                    << " - ";
-                    return _frac<>();
-                }
-        }
-        return (P0/Q0)-(P1/Q1);
-    }
+    if (I.val()==0 ||
+        I.val()==0.5 ||
+        J0.val()==0.5 ) 
+        return _frac<>();
     else {
-        if (I.val()==0 ||
-            I.val()==0.5 ||
-            J0.val()==0.5 ) 
-            return _frac<>();
-        else {
-            // B*((3/4)*C(C+1)-I(I+1)*J(J+1))/2
-            /***************************************/
-            C0=F0*(F0+1)-J0*(J0+1)-I*(I+1);
-            P0=_frac<>(3,2)*C0*(C0+1)-2*I*(I+1)*J0*(J0+1);
-            Q0=4*I*(2*I-1)*J0*(2*J0-1);
-            /***********/
-        }
+        // B*((3/4)*C(C+1)-I(I+1)*J(J+1))/2
+        /***************************************/
+        C0=F0*(F0+1)-J0*(J0+1)-I*(I+1);
+        P0=_frac<>(3,2)*C0*(C0+1)-2*I*(I+1)*J0*(J0+1);
+        Q0=4*I*(2*I-1)*J0*(2*J0-1);
+        /***********/
     }
     return P0/Q0;
 }
 
-double long _io::E_E2() {
-    return B*this->E_E2_divB().val();
+double long _io::DE_E2() {
+    _frac<> C0(1), P0(0), Q0(1);
+    _frac<> C1(1), P1(0), Q1(1);
+    
+    if (I.val()==0 || 
+        I.val()==0.5 ||
+        J0.val()==0.5 || 
+        J1.val()==0.5 ) 
+        return 0;
+    else {
+        if (((F0-F1).abs().val()==1 || (F0-F1).val()==0) &&
+            ((J0-J1).abs().val()==1 || (J0-J1).val()==0) ) {
+            
+            // B*((3/4)*C(C+1)-I(I+1)*J(J+1))/2
+            /***************************************/
+            C0=F0*(F0+1)-J0*(J0+1)-I*(I+1);
+            P0=_frac<>(3,4)*C0*(C0+1)-I*(I+1)*J0*(J0+1);
+            Q0=2*I*(2*I-1)*J0*(2*J0-1);
+        
+            C1=F1*(F1+1)-J1*(J1+1)-I*(I+1);
+            P1=_frac<>(3,4)*C1*(C1-1)-I*(I+1)*J1*(J1+1);
+            Q1=2*I*(2*I-1)*J1*(2*J1-1);
+            /***********/
+            }
+        else {
+            std::cout << " - forbidden transition: |\u0394F|=" 
+            << (F0-F1).abs().show() 
+            << " |\u0394J|="
+            << (J0-J1).abs().show()
+            << " - ";
+            return 0;
+        }
+    }
+    return B1*(P1/Q1).val()-B0*(P0/Q0).val();
 }
 
-double long _io::lambda_shift() {
-    return lambda-1.0/(E_M1()+E_E2())*1e-8; //1/(cm*10^8 A) ?
-}
+// double long _io::lambda_shift() {
+//     return lambda-1.0/(E_M1()+E_E2())*1e-8; //1/(cm*10^8 A) ?
+// }
 
 
 // Compute gf_hfs
@@ -369,7 +454,7 @@ double long _io::gf_hfs(void) {
             
             // Compute Wigner 6j
             _CGWR W6j(QN, _CGWR::C_W6j);
-            
+
             return (2*F0.val()+1)*(2*F1.val()+1)*pow(W6j.W6j(),2)*gf_hf;
             /***********/
         }
@@ -384,4 +469,33 @@ double long _io::gf_hfs(void) {
         
         /***********/
 }
+/***********/
+
+
+// align output
+/***************************************/
+std::string _io::centerstr(const std::string &s) {
+    std::string tmp="";
+    unsigned int pos=(60-s.length())/2;
+    for(unsigned int i=0;i<pos;i++)
+        tmp+=" ";
+    return tmp+=s;   
+}
+
+std::string _io::centerstr(double long x) {
+    return centerstr(std::to_string(x));
+}
+
+std::string _io::rightstr(const std::string &s) {
+    std::string tmp="";
+    unsigned int pos=(120-s.length())/2;
+    for(unsigned int i=0;i<pos;i++)
+        tmp+=" ";
+    return tmp+=s;    
+}
+
+std::string _io::rightstr(double long x) {
+    return rightstr(std::to_string(x));
+}
+
 /***********/
