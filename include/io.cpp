@@ -71,13 +71,13 @@ OPTIONS:\n \
         --A0 real    A-HFS constant of the level\n \
         --B0 real    B-HFS constant of the level\n\n";
         
-        help+="The non-mandatory format int/int means p/q, \u2200(p,q) \u2208 N \u2A2F \u00BDN.\n\n";
+        help+="The mandatory format int/int means p/q, \u2200(p,q) \u2208 N \u2A2F 2N.\n\n";
         
         help+="HFS shift is computed with the first order perturbation theory since coupling between \
 magnetic field of electronic cloud and nucleus momentum is weak. \
 Wigner 6j symbols are used to facilitate the manipulation of spherical harmonics in the matrix elements computation. \n\n";
         
-        help+="A and B are independent from F: A=A(2S+1^L_J). They are expressed in MHz or mK. Thus one has to multiply the energy by 1e6*h or 1e-3*k_B.\n\n";
+        help+="A and B are independent from F: A=A(2S+1 L_J). They are expressed in MHz or mK. Thus one has to multiply the energy by 1e6*h or 1e-3*k_B.\n\n";
                
         help+="Note that nuclei far away from the double magicity (±3 nucleons) and heavy elements \
 are no more spherical (Q<0 or Q>0) and HFS constant B might have to be taken into account.\n\n \
@@ -95,7 +95,7 @@ Even-Even nucleus has I=0.\n\n";
 ./shfs -0 -I 3/2 --J0 1\n \
 ./shfs -1 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3\n \
 ./shfs -2 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 10\n \
-./shfs -3 -I 1.5 --J0 0.5 --F0 4 --J1 0.5 --F1 3\n\n";
+./shfs -3 -I 3/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3\n\n";
         
         help+=" ref: \n \
 R. D. Cowan, The Theory of Atomic Structure and Spectra (1981) \n \
@@ -469,33 +469,4 @@ double long _io::gf_hfs(void) {
         
         /***********/
 }
-/***********/
-
-
-// align output
-/***************************************/
-std::string _io::centerstr(const std::string &s) {
-    std::string tmp="";
-    unsigned int pos=(60-s.length())/2;
-    for(unsigned int i=0;i<pos;i++)
-        tmp+=" ";
-    return tmp+=s;   
-}
-
-std::string _io::centerstr(double long x) {
-    return centerstr(std::to_string(x));
-}
-
-std::string _io::rightstr(const std::string &s) {
-    std::string tmp="";
-    unsigned int pos=(120-s.length())/2;
-    for(unsigned int i=0;i<pos;i++)
-        tmp+=" ";
-    return tmp+=s;    
-}
-
-std::string _io::rightstr(double long x) {
-    return rightstr(std::to_string(x));
-}
-
 /***********/

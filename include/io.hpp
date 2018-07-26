@@ -32,12 +32,6 @@ public:
 
     // return gf_hfs
     double long gf_hfs(void);
-
-    // align output
-    static std::string centerstr(const std::string &s);
-    static std::string centerstr(double long x);
-    static std::string rightstr(const std::string &s);
-    static std::string rightstr(double long x);
     
     bool A0_isempty;
     bool B0_isempty;

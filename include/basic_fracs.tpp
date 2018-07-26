@@ -274,9 +274,7 @@ std::string _frac<_T, _T1, _T2>::show() {
     if  (this->F[1]!=1 &&  this->F[1]!=0) 
         buf << std::setprecision(prec) 
                     << static_cast<_T>(this->F[0]) 
-                    << "/" << static_cast<_T>(this->F[1])
-                    << "\u2243" 
-                    << static_cast<_T>(this->F[0]/this->F[1]) ;
+                    << "/" << static_cast<_T>(this->F[1]);
     if  (this->F[1]==1 && (std::floor(this->F[0]) ==  this->F[0]))
         buf << std::setprecision(prec) 
                     << static_cast<int>(this->F[0]);
