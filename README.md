@@ -86,6 +86,8 @@ Usage: ./shfs [OPTIONS]
                   with these additional options:
          --I int/int  nuclear momentum (required).
          --J0 int/int electronic momentum (required). 
+         --A0 real    A-HFS constant of the level
+         --B0 real    B-HFS constant of the level
 
  -1 or --1        compute energy or/and wavelength shift
                   |I,J0,F0> → |I,J1,F1> 
@@ -95,8 +97,10 @@ Usage: ./shfs [OPTIONS]
          --F0 int/int total momentum: I⊗J0 (required). 
          --J1 int/int (required)
          --F1 int/int (required)
-         --A real     A-hfs constant of the transition (Mhz)
-         --B real     B-hfs constant of the transition (Mhz)
+         --A0 real    A-HFS constant of the lower/upper level (required)
+         --B0 real    B-HFS constant of the lower/upper level
+         --A1 real    A-HFS constant of the upper/lower level (required)
+         --B1 real    B-HFS constant of the upper/lower level
          --l real     wavelength of the transition (Å)
 
  -2 or --2        compute hfs oscillator strength
@@ -114,26 +118,33 @@ Usage: ./shfs [OPTIONS]
          --I int/int  (required).
          --J0 int/int (required). 
          --F0 int/int I⊗J0 (required). 
+         --A0 real    A-HFS constant of the level
+         --B0 real    B-HFS constant of the level
 
-The non-mandatory format int/int means p/q, ∀(p,q) ∈ N ⨯ ½N.
+The mandatory format int/int means p/q, ∀(p,q) ∈ N ⨯ 2N.
 
-HFS shift is computed with the first order perturbation theory since coupling between magnetic field of electronic cloud and nucleus momentum is weak. 
-Wigner 6j is used to facilitate the manipulation of spherical harmonics in the matrix elements computation. 
+HFS shift is computed with the first order perturbation theory since coupling between magnetic field of electronic cloud and nucleus momentum is weak. Wigner 6j symbols are used to facilitate the manipulation of spherical harmonics in the matrix elements computation. 
 
-Please note that nuclei far away from the double magicity (±3 nucleons) and heavy elements are no more spherical (Q<0 or Q>0) and HFS constant B might have to be taken into account.
+A and B are independent from F: A=A(2S+1 L_J). They are expressed in MHz or mK. Thus one has to multiply the energy by 1e6*h or 1e-3*k_B.
+
+Note that nuclei far away from the double magicity (±3 nucleons) and heavy elements are no more spherical (Q<0 or Q>0) and HFS constant B might have to be taken into account.
 
  Examples: 
      Ca: A=40  Z=20 N=20  Q=0 b 
      Hg: A=201 Z=80 N=121 Q=0.65 b 
      U:  A=238 Z=92 N=146 Q=11 b 
 
- Even-Even nucleus has I=0.
+Even-Even nucleus has I=0.
+
+Notations:
+ <H> ≐ <nIJF|H|nIJF>
+ <ΔH> ≐ E(I,J',F') - E(I,J,F)
 
 Command examples:
  ./shfs -0 -I 3/2 --J0 1
  ./shfs -1 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
  ./shfs -2 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 10
- ./shfs -3 -I 1.5 --J0 0.5 --F0 4 --J1 0.5 --F1 3
+ ./shfs -3 -I 3/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
 
  ref: 
  R. D. Cowan, The Theory of Atomic Structure and Spectra (1981) 
@@ -148,43 +159,36 @@ Command examples:
 
 Caesium 8S1/2: A=219 MHz
 ```
-$ ./shfs -0 -I 3/2 --J0 1
+$ ./shfs -0 -I 3/2 --J0 1 -A 219
 Parameters:
-- I=3/2≃1.5
+- I=3/2
 - J0=1
 
-HFS Energy shift for an energy level:
-Parameters:
-- I=3/2≃1.5
-- J0=1
-
-● HFS Energy shift for an energy level:
+● HFS Energy shift:
 → Magnetic dipole M1
-F=1/2≃0.5: ΔE_M1/A=-5/2≃-2.5
-F=3/2≃1.5: ΔE_M1/A=-1
-F=5/2≃2.5: ΔE_M1/A=3/2≃1.5
+F=1/2   <H>_M1/A=-5/2   <H>_M1≃-547.5
+F=3/2   <H>_M1/A=-1     <H>_M1≃-219
+F=5/2   <H>_M1/A=3/2    <H>_M1≃328.5
 
 → Electric quadrupole E2 
-F=1/2≃0.5: ΔE_E2/B=5/4≃1.25
-F=3/2≃1.5: ΔE_E2/B=-1
-F=5/2≃2.5: ΔE_E2/B=1/4≃0.25
+F=1/2   <H>_E2/B=5/4
+F=3/2   <H>_E2/B=-1
+F=5/2   <H>_E2/B=1/4
 
 bye !
 
-$ ./shfs -1 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
+$ ./shfs -1 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --A0 12 --A1 -5
 Parameters:
-- I=7/2≃3.5
-- J0=1/2≃0.5
-- J1=1/2≃0.5
+- I=7/2
+- J0=1/2
+- J1=1/2
 - F0=4
 - F1=3
+- A0=12 - A1=-5
 
-❶ HFS Energy shift for a transition:
+❶ HFS Energy shift:
 → Magnetic dipole M1
-ΔE_M1/A=4
-
-→ Electric quadrupole E2 
-ΔE_E2/B=0
+<ΔH>_M1=-9.75
 
 bye !
 
@@ -203,18 +207,18 @@ Parameters:
 
 bye !
 
-$ ./shfs -3 -I 1.5 --J0 0.5 --F0 4 --J1 0.5 --F1 3
+$ ./shfs -3 -I 3/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
 Parameters:
-- I=1.5
-- J0=0.5
+- I=3/2
+- J0=1/2
 - F0=4
 
-❸ HFS Energy shift for an energy level:
+❸ HFS Energy shift:
 → Magnetic dipole M1
-ΔE_M1/A=15.5/2≃7.75
+<ΔH>_M1/A=31/4
 
 → Electric quadrupole E2 
-ΔE_E2/B=0
+<ΔH>_E2/B=0
 
 bye !
 
