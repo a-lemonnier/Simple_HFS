@@ -75,11 +75,20 @@ private:
     
     // mid computations
     /***********/
-    double long fact(double long ); // factorial
+    long double fact ( long double n ); // factorial
     double long Delta(double long , double long , double long ); // triangle relation
     double long delta_k(double long , double long ); // kronecker
-    bool is_integer(double long ); // return true if interger
-    bool is_halfinteger(double long ); // return true if half interger
+  
+    // variadic
+    template<typename _T>
+    bool is_integer(_T n); // return true if integer
+    template<typename _T, typename ..._args>
+    bool is_integer(_T, _args...);
+    
+    template<typename _T>
+    bool is_halfinteger(_T); // return true if half integer
+    template<typename _T, typename ..._args>
+    bool is_halfinteger(_T, _args...);
     /***********/
 
 };

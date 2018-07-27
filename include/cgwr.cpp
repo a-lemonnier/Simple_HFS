@@ -44,7 +44,6 @@ _CGWR::_CGWR(double long M[], unsigned int Symb) {
             exit(EXIT_FAILURE);
     }
     selected_Symb=Symb;
-
 }
 /***********/
 
@@ -138,22 +137,13 @@ double long _CGWR::W3j(void) {
     bool test = j1+j2>=j3;
     test &= j2+j3>=j1;
     test &= j3+j1>=j2;
-
-    test &= is_integer(j1+j2+j3);
-    test &= is_integer(j1-j2-m3);
-
     test &= m1+m2+m3==0;
-
     test &= abs(m1)>=0 && j1>=abs(m1);
     test &= abs(m2)>=0 && j2>=abs(m2);
     test &= abs(m3)>=0 && j3>=abs(m3);
-
-    test &= is_integer(j1) || is_halfinteger(j1);
-    test &= is_integer(j2) || is_halfinteger(j2);
-    test &= is_integer(j3) || is_halfinteger(j3);
-    test &= is_integer(m1) || is_halfinteger(m1);
-    test &= is_integer(m2) || is_halfinteger(m2);
-    test &= is_integer(m3) || is_halfinteger(m3);
+    test &= is_integer(j1+j2+j3, j1-j2-m3);
+    test &= is_integer(j1,j2,j3,m1,m2,m3);
+    test |= is_halfinteger(j1,j2,j3,m1,m2,m3);
 
     if (test) {
         kmin=std::max(
@@ -209,7 +199,6 @@ double long _CGWR::W6j(void) {
     test &= delta(l1,l2,j3);
     
     test &= is_integer(j1+j2+j3);
-    //test &= is_integer(l1+l2+l3);
     
 /***********/
 
@@ -254,7 +243,7 @@ double long _CGWR::Racah(void) {
 
 // Int Factorial
 /***************************************/
-double long _CGWR::fact(double long n) {
+inline double long _CGWR::fact(double long n) {
     if (n<0 || !is_integer(n)) {
         std::cerr << "_CGWR::fact(): /!\\ bad number: "
                   << n << ".\n";
@@ -297,11 +286,24 @@ double long _CGWR::delta_k(double long a,
 
 // Misc. methods
 /***************************************/
-bool _CGWR::is_integer(double long n) {
+template<typename _T>
+bool _CGWR::is_integer(_T n) {
   return std::floor(n) == n;
 }
 
-bool _CGWR::is_halfinteger(double long s) {
+template<typename _T, typename... _args>
+bool _CGWR::is_integer(_T n, _args... args) {
+    return is_integer(n) && is_integer(args...);    
+}
+
+template<typename _T>
+bool _CGWR::is_halfinteger(_T s) {
   return std::floor(s*2) == 2*s && std::floor(s)!=s;
 }
+
+template<typename _T, typename... _args>
+bool _CGWR::is_halfinteger(_T n, _args ...args) {
+    return is_halfinteger(n) && is_halfinteger(args...);    
+}
+
 /***********/
