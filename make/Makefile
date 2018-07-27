@@ -1,7 +1,7 @@
 RINC=include
 
 CXX=g++
-CXXFLAGS=-std=c++11 -O3	 -Wall -pedantic -I$(RINC)
+CXXFLAGS=-std=c++11 -O3	 -Wall -Wextra -pedantic -I$(RINC)
 LDFLAGS=-std=c++11 -I$(RINC)
 
 EXEC=shfs

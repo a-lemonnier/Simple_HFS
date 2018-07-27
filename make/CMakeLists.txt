@@ -3,7 +3,7 @@ project(Simple_HFS)
 
 add_subdirectory(./include)
 
-add_compile_options(-std=c++11 -o3 -Wall -pedantic)
+add_compile_options(-std=c++11 -o3 -Wall -Wextra -pedantic)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

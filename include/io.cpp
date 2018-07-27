@@ -246,13 +246,14 @@ https://www-nds.iaea.org/nuclearmoments\n";
         if ((test0!=3 && mode==0) ||
             (test1<7  && mode==1) || 
             (test2!=7 && mode==2) || 
-            (test3!=4 && mode==3)) {
+            (test3!=4 && mode==3) ||
+            (mode==-1)) {
                 std::cerr << "\u26a0 not enough args. Type: " <<  argv[0] << " -h\n";
                 exit(EXIT_FAILURE);
             }
     }
     else {
-        std::cerr << "\u26a0 not enough args. Type: " << argv[0] << " -h\n";
+        std::cerr << "\u26a0 not enough args or bad mode. Type: " << argv[0] << " -h\n";
         exit(EXIT_FAILURE);
     }
     /***********/
