@@ -22,13 +22,12 @@ public:
     _io(int argc, char** argv); // parse command line
     ~_io();
     
-    // write results
     bool compute(void);
     void print(void);
     bool write(void);
     
 private:
-    
+        
     // return DeltaE_M1/(A*hbar)
     _frac<> E_M1_divA(void);
     // return (E'_M1-E_M1)/hbar

@@ -486,6 +486,7 @@ bool _io::compute(void) {
 	for(F0=(I-J0).abs(); F0< I+J0+_frac<>(1); F0++) {
 	  output << "F="<< F0.show();
 	  output  << std::setw(10) << "\t<H>_M1/A="+E_M1_divA().show();
+        
 	  if (!A0_isempty)
 	    output  << std::setw(10)  << "\t<H>_M1\u2243" <<  E_M1_divA().val()*A0;
 	  output << std::endl;
@@ -611,5 +612,6 @@ bool _io::write(void) {
     return OK;
 }
 
-
 /***********/
+
+
