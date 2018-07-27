@@ -2,12 +2,15 @@
 #define IO_HPP
 
 #include <iostream>
-#include <fstream>
+#include <fstream> // write results
 #include <sstream>
 #include <string>
 #include <cmath>
 #include <iomanip> // setprecision
-#include <getopt.h> // GNU parser
+
+#include <getopt.h> // GNU cmd line parser
+#include <sys/stat.h> // file existence
+#include <unistd.h>
 
 #include "basic_fracs.hpp" // fraction class made to avoid boost::rational
 #include "cte.hpp" // some constants
@@ -18,7 +21,14 @@ public:
 
     _io(int argc, char** argv); // parse command line
     ~_io();
-
+    
+    // write results
+    bool compute(void);
+    void print(void);
+    bool write(void);
+    
+private:
+    
     // return DeltaE_M1/(A*hbar)
     _frac<> E_M1_divA(void);
     // return (E'_M1-E_M1)/hbar
@@ -34,12 +44,7 @@ public:
 
     // return gf_hfs
     double long gf_hfs(void);
-    
-    // write results
-    bool compute(void);
-    void print(void);
-    bool write(void);
-    
+
     bool A0_isempty;
     bool B0_isempty;
     bool A1_isempty;
@@ -47,16 +52,15 @@ public:
     bool lambda_isempty;
     bool gf_hf_isempty;
 
-    _frac<> I;
-    _frac<> J0, F0; // |I J0 F0>
-    _frac<> J1, F1; // |I J1 F1> 
-    
-private:
     int mode;
     double long A0, B0;
     double long A1, B1;
     double long lambda;
     double long gf_hf;
+    
+    _frac<> I;
+    _frac<> J0, F0; // |I J0 F0>
+    _frac<> J1, F1; // |I J1 F1> 
     
     std::ostringstream output;
 };

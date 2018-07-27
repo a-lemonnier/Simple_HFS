@@ -579,24 +579,36 @@ void _io::print(void) {
 }
 
 bool _io::write(void) {
-    bool test=false;
+    bool OK=false;
+    std::string ext=".txt";
+    
+    // If file exists, add a number to the filename
+	/***************************************/
+    auto file_exists=[](const std::string &str, const std::string &ext){
+        struct stat buf;
+        return (stat ((str+ext).c_str(), &buf) == 0);};
+    
+    std::string pattern="out_m"+std::to_string(mode);
+    std::string filename=pattern+"_0";
+    unsigned int i=0;
+    while(file_exists(filename,ext)) 
+        filename=pattern+"_"+std::to_string(i++);        
     
     // Write results
 	/***************************************/
-    std::ofstream flux("output_mode"+std::to_string(mode)+".txt", std::ios::out|std::ios::trunc);
+    std::ofstream flux(filename+ext, std::ios::out|std::ios::trunc);
     
     if (flux.is_open()) {
         flux << output.str();
         flux.close();
+        OK=true;
     }
     else {
         std::cerr << "\u26a0 error while opening: output_mode" << mode << ".txt\n";        
     }
     
-    return test;
+    return OK;
 }
-
-
 
 
 /***********/

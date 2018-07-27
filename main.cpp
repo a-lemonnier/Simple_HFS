@@ -1,9 +1,3 @@
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <iomanip> //precision
-#include <cmath>
-
 #include "include/basic_fracs.hpp"
 #include "include/io.hpp"
 #include "include/cgwr.hpp"
