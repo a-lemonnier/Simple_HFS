@@ -333,6 +333,13 @@ bool _frac<_T, _T1, _T2>::is_number(const std::string &str) {
     return test;
 }
 
+template<class _T, class _T1, class _T2> 
+template<typename ..._args>
+bool _frac<_T, _T1, _T2>::is_number(const std::string &str, _args...args) {
+    return is_number(str)&&is_number(args...);
+}
+
+
 template<class _T, class _T1, class _T2>
 _T _frac<_T, _T1, _T2>::gcd(_T1 a, _T2 b) {
     _T c = fmodl(a,b);

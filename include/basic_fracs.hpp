@@ -41,6 +41,8 @@ public:
     // convert string "p/q" to _frac<>(p,q)
     static _frac<_T, _T1, _T2>& str_to_frac(const std::string &str);
     static bool is_number(const std::string &str);
+    template<typename ..._args>
+    static bool is_number(const std::string &str, _args...args);
     
     _frac& abs(void);
     
