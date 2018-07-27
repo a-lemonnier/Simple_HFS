@@ -309,42 +309,42 @@ https://www-nds.iaea.org/nuclearmoments\n";
     
     // Show parameters
     /***************************************/
-    std::cout << "Parameters:\n";
-    std::cout << "- I=" << I.show() << "\n";
-    std::cout << "- J0=" << J0.show() << "\n";
+    output << "Parameters:\n";
+    output << "- I=" << I.show() << "\n";
+    output << "- J0=" << J0.show() << "\n";
     if (mode!=0 && mode!=3) 
-        std::cout << "- J1=" << J1.show() << "\n";
+        output << "- J1=" << J1.show() << "\n";
     if (mode!=0) 
-        std::cout << "- F0=" << F0.show() << "\n";
+        output << "- F0=" << F0.show() << "\n";
     if (mode!=0 && mode!=3) 
-        std::cout << "- F1=" << F1.show() << "\n";
+        output << "- F1=" << F1.show() << "\n";
     
     if (mode==1) {
         if (!B0_isempty &&
             !B1_isempty) 
-            std::cout << std::setprecision(6) 
+            output << std::setprecision(6) 
             << "- A0=" << A0 
             << " - B0=" << B0
             << " - A1=" << A1
             << " - B1=" << B1
             << "\n";
         else {
-            std::cout << std::setprecision(6) 
+            output << std::setprecision(6) 
             << "- A0=" << A0 
             << " - A1=" << A1
             << "\n";
         }
         if (!lambda_isempty) 
-            std::cout << std::setprecision(6) 
+            output << std::setprecision(6) 
             << "- wavelength: " 
             << lambda << " \u00C5\n";
     }
     if (mode==2)
-        std::cout << std::setprecision(6) 
+        output << std::setprecision(6) 
         << "- gf_hf=" 
         << gf_hf 
         << "\n";
-    std::cout << "\n";
+    output << "\n";
     /***********/
 }
 
@@ -364,7 +364,7 @@ double long _io::DE_M1() {
         C1=(F1*(F1+1)-J1*(J1+1)-I*(I+1));
         }
         else {
-            std::cout << " - forbidden transition: |\u0394F|=" 
+            output << " - forbidden transition: |\u0394F|=" 
             << (F0-F1).abs().show() 
             << " |\u0394J|=" 
             << (J0-J1).abs().show() 
@@ -416,7 +416,7 @@ double long _io::DE_E2() {
             /***********/
             }
         else {
-            std::cout << " - forbidden transition: |\u0394F|=" 
+            output << " - forbidden transition: |\u0394F|=" 
             << (F0-F1).abs().show() 
             << " |\u0394J|="
             << (J0-J1).abs().show()
@@ -459,7 +459,7 @@ double long _io::gf_hfs(void) {
             /***********/
         }
         else {
-            std::cout << " - forbidden transition: |\u0394F|=" 
+            output << " - forbidden transition: |\u0394F|=" 
             << (F0-F1).abs().show() 
             << " |\u0394J|=" 
             << (J0-J1).abs().show() 
@@ -469,4 +469,134 @@ double long _io::gf_hfs(void) {
         
         /***********/
 }
+/***********/
+
+
+// Compute, print to term or write
+/***************************************/
+
+bool _io::compute(void) {
+        if (mode==0) {
+        output << "\u25cf HFS Energy shift:\n";
+        output << "\u2192 Magnetic dipole M1\n";
+        
+	// |I-J0| <= F <= I+J0
+	/***************************************/       
+	for(F0=(I-J0).abs(); F0< I+J0+_frac<>(1); F0++) {
+	  output << "F="<< F0.show();
+	  output  << std::setw(10) << "\t<H>_M1/A="+E_M1_divA().show();
+	  if (!A0_isempty)
+	    output  << std::setw(10)  << "\t<H>_M1\u2243" <<  E_M1_divA().val()*A0;
+	  output << std::endl;
+	}
+	
+	output << "\n";
+	output << "\u2192 Electric quadrupole E2 \n";
+	
+	for(F0=(I-J0).abs(); F0< I+J0+_frac<>(1); F0++) {
+	  output << "F="<< F0.show();
+	  output  << std::setw(10) << "\t<H>_E2/B="+E_E2_divB().show();
+	  if (!B0_isempty)
+	    output  << std::setw(10)  << "\t<H>_E2\u2243" <<  E_E2_divB().val()*B0;
+	  output << std::endl;
+	}
+	/***********/
+        
+    }
+    if (mode==1) {
+        output << "\u2776 HFS Energy shift:\n";
+        output << "\u2192 Magnetic dipole M1\n";
+        output << std::setprecision(20) 
+        << "<\u0394H>_M1=" 
+        << DE_M1() 
+        << "\n";
+        
+	if (!B0_isempty && !B1_isempty) {
+	  output << "\n\u2192 Electric quadrupole E2 \n";
+	  output << std::setprecision(20) 
+	  << "<\u0394H>_E2=" 
+	  << DE_E2() 
+	  << "\n";
+	}
+        
+//         if (!lambda_isempty && !A_isempty)
+//             output << std::setprecision(20) 
+//             << "\nshifted wavelength: " 
+//             << lambda_shift() 
+//             << " \u00C5\n";
+    }
+    
+    if (mode==2) {
+        output << "\u2777 HFS oscillator strength:\n";
+        output  << std::setprecision(20) 
+        << "\u2192 HFS gf=" 
+        << gf_hfs() 
+        << "\n";
+        
+        if (gf_hfs()!=0)
+            output  << std::setprecision(5) 
+            << "\u2192 log(gf)=" 
+            << log(gf_hfs()) 
+            << "\n";
+        
+        output  << std::setprecision(20) 
+        << "\u2192 effective ngf=" 
+        << gf_hfs()/(2*I.val()+1) 
+        << "\n";
+        
+        if (gf_hfs()!=0)
+            output << std::setprecision(5) 
+            << "\u2192 effective log(ngf)="
+            << log(gf_hfs()/(2*I.val()+1)) 
+            << "\n";
+        
+    }
+    if (mode==3) {
+        output << "\u2778 HFS Energy shift:\n";
+        output << "\u2192 Magnetic dipole M1\n";
+        
+        output << "<\u0394H>_M1/A=" 
+        << E_M1_divA().show(); 
+         if (!A0_isempty)
+                output << std::setw(10)  << "\t<H>_M1\u2243"
+                << E_M1_divA().val()*A0;
+        output << "\n";
+        
+        output << "\n\u2192 Electric quadrupole E2 \n";
+        output << "<\u0394H>_E2/B=" 
+        << E_E2_divB().show();
+        if (!B0_isempty)
+                output << std::setw(10)  << "\t<H>_E2\u2243"
+                << E_E2_divB().val()*B0;
+        output << "\n";        
+    }
+    return mode>-1 && mode<4;
+}
+
+
+void _io::print(void) {
+    std::cout << output.str() << "\n";
+}
+
+bool _io::write(void) {
+    bool test=false;
+    
+    // Write results
+	/***************************************/
+    std::ofstream flux("output_mode"+std::to_string(mode)+".txt", std::ios::out|std::ios::trunc);
+    
+    if (flux.is_open()) {
+        flux << output.str();
+        flux.close();
+    }
+    else {
+        std::cerr << "\u26a0 error while opening: output_mode" << mode << ".txt\n";        
+    }
+    
+    return test;
+}
+
+
+
+
 /***********/

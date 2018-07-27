@@ -2,6 +2,8 @@
 #define IO_HPP
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 #include <string>
 #include <cmath>
 #include <iomanip> // setprecision
@@ -33,25 +35,30 @@ public:
     // return gf_hfs
     double long gf_hfs(void);
     
+    // write results
+    bool compute(void);
+    void print(void);
+    bool write(void);
+    
     bool A0_isempty;
     bool B0_isempty;
     bool A1_isempty;
     bool B1_isempty;
     bool lambda_isempty;
     bool gf_hf_isempty;
-    int mode;
 
-    double long A0, B0;
-    
     _frac<> I;
     _frac<> J0, F0; // |I J0 F0>
     _frac<> J1, F1; // |I J1 F1> 
     
 private:
-
+    int mode;
+    double long A0, B0;
     double long A1, B1;
     double long lambda;
     double long gf_hf;
+    
+    std::ostringstream output;
 };
 
 
