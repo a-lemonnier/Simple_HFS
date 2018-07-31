@@ -32,14 +32,14 @@ compute HFS energy shift and effective HFS oscillator strength from \
 quantum numbers and HFS constants if available \n\n \
 OPTIONS:\n \
 -h or --help     show this help\n\n \
--0 or --0        compute energy shift of the level for I\u2297J0\n \
+-0 or --0        compute energy shift of the splitted levels (I\u2297J0)\n \
                  with these additional options:\n \
         --I int/int  nuclear momentum (required).\n \
         --J0 int/int electronic momentum (required). \n \
         --A0 real    A-HFS constant of the level\n \
         --B0 real    B-HFS constant of the level\n\n \
 \
--1 or --1        compute energy or/and wavelength shift\n \
+-1 or --1        compute energy or/and wavelength shift for one HFS transition\n \
                  |I,J0,F0> \u2192 |I,J1,F1> \n \
                  with these additional options:\n \
         --I int/int  (required).\n \
@@ -53,7 +53,7 @@ OPTIONS:\n \
         --B1 real    B-HFS constant of the upper/lower level\n \
         --l real     wavelength of the transition (\u00C5)\n\n \
 \
--2 or --2        compute hfs oscillator strength\n \
+-2 or --2        compute hfs oscillator strength for on HFS transition\n \
                  |I,J0,F0> \u2192 |I,J1,F1>\n \
                  with these additional options:\n \
         --I  int/int (required)\n \
@@ -63,7 +63,7 @@ OPTIONS:\n \
         --F1 int/int (required)\n \
         --gf real    HF oscillator strength log(gf_hf) (required)\n\n \
 \
--3 or --3        compute energy shift of the level (J F)\n \
+-3 or --3        compute energy shift of the level (J0 F0)\n \
                  with these additional options:\n \
         --I int/int  (required).\n \
         --J0 int/int (required). \n \
@@ -281,9 +281,8 @@ https://www-nds.iaea.org/nuclearmoments\n";
     /***************************************/
     I=_frac::str_to_frac(sI);
     J0=_frac::str_to_frac(sJ0);
-    if (mode!=0)
+    if (mode!=0) {
         F0=_frac::str_to_frac(sF0);
-    if (mode!=0 && mode!=3) {
         J1=_frac::str_to_frac(sJ1);
         F1=_frac::str_to_frac(sF1);
     }
@@ -313,33 +312,28 @@ https://www-nds.iaea.org/nuclearmoments\n";
     output << "Parameters:\n";
     output << "- I=" << I.show() << "\n";
     output << "- J0=" << J0.show() << "\n";
-    if (mode!=0 && mode!=3)
-        output << "- J1=" << J1.show() << "\n";
     if (mode!=0) {
+        output << "- J1=" << J1.show() << "\n";
         output << "- F0=" << F0.show() << "\n";
-        if (!A0_isempty)
-            output << std::setprecision(6)
-                   << "- A0=" << A0 << "\n";
-        if (!B0_isempty)
-            output << std::setprecision(6)
-                   << "- B0=" << B0 << "\n";
-    }
-    if (mode!=0 && mode!=3)
         output << "- F1=" << F1.show() << "\n";
+    }
+    if (!A0_isempty)
+        output << std::setprecision(6)
+                   << "- A0=" << A0 << "\n";
+    if (!B0_isempty)
+        output << std::setprecision(6)
+                   << "- B0=" << B0 << "\n";
 
     if (mode==1) {
         if (!B0_isempty &&
             !B1_isempty)
             output << std::setprecision(6)
-            << "- A0=" << A0
-            << " - B0=" << B0
-            << " - A1=" << A1
+            << "- A1=" << A1
             << " - B1=" << B1
             << "\n";
         else {
             output << std::setprecision(6)
-            << "- A0=" << A0
-            << " - A1=" << A1
+            << "- A1=" << A1
             << "\n";
         }
         if (!lambda_isempty)
@@ -349,7 +343,7 @@ https://www-nds.iaea.org/nuclearmoments\n";
     }
     if (mode==2)
         output << std::setprecision(6)
-        << "- gf_hf="
+        << "- gf_FS="
         << gf_hf
         << "\n";
     output << "\n";
@@ -537,25 +531,25 @@ bool _io::compute(void) {
 
     if (mode==2) {
         output << "\u2777 HFS oscillator strength:\n";
-        output  << std::setprecision(20)
-        << "\u2192 HFS gf="
+        output  << std::setprecision(15)
+        << "\u2192 gf_HFS="
         << gf_hfs()
         << "\n";
 
         if (gf_hfs()!=0)
             output  << std::setprecision(5)
-            << "\u2192 log(gf)="
+            << "\u2192 log(gf_HFS)="
             << log(gf_hfs())
             << "\n";
 
-        output  << std::setprecision(20)
-        << "\u2192 effective ngf="
+        output  << std::setprecision(15)
+        << "\u2192 effective ngf_HFS="
         << gf_hfs()/(2*I.val()+1)
         << "\n";
 
         if (gf_hfs()!=0)
             output << std::setprecision(5)
-            << "\u2192 effective log(ngf)="
+            << "\u2192 effective log(ngf_HFS)="
             << log(gf_hfs()/(2*I.val()+1))
             << "\n";
 
