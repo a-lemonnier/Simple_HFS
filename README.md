@@ -3,10 +3,11 @@
 TODO:
 - _frac<> W6j
 - wavelength shift
+- cm^-1 to eV
 
 
 Dependencies:
-- cmake or make: a makefile is in Simple_HFS/make
+- cmake or make: a makefile is located in Simple_HFS/make/
 - gcc / g++ : c++11
 
 ********
@@ -83,14 +84,14 @@ Usage: ./shfs [OPTIONS]
  OPTIONS:
  -h or --help     show this help
 
- -0 or --0        compute energy shift of the level for I⊗J0
+ -0 or --0        compute energy shift of the splitted levels (I⊗J0)
                   with these additional options:
          --I int/int  nuclear momentum (required).
          --J0 int/int electronic momentum (required). 
          --A0 real    A-HFS constant of the level
          --B0 real    B-HFS constant of the level
 
- -1 or --1        compute energy or/and wavelength shift
+ -1 or --1        compute energy or/and wavelength shift for one HFS transition
                   |I,J0,F0> → |I,J1,F1> 
                   with these additional options:
          --I int/int  (required).
@@ -104,7 +105,7 @@ Usage: ./shfs [OPTIONS]
          --B1 real    B-HFS constant of the upper/lower level
          --l real     wavelength of the transition (Å)
 
- -2 or --2        compute hfs oscillator strength
+ -2 or --2        compute hfs oscillator strength for on HFS transition
                   |I,J0,F0> → |I,J1,F1>
                   with these additional options:
          --I  int/int (required)
@@ -114,7 +115,7 @@ Usage: ./shfs [OPTIONS]
          --F1 int/int (required)
          --gf real    HF oscillator strength log(gf_hf) (required)
 
- -3 or --3        compute energy shift of the level (J F)
+ -3 or --3        compute energy shift of the level (J0 F0)
                   with these additional options:
          --I int/int  (required).
          --J0 int/int (required). 
@@ -152,7 +153,6 @@ Command examples:
  Jie Wang et al. (2014) - DOI: 10.1088/0957-0233/25/3/035501 
  G. M. Wahlgren (1995) - DOI: 10.1086/175618
  https://www-nds.iaea.org/nuclearmoments
-
 ```
 >
 > Dummy examples:
@@ -164,6 +164,7 @@ $ ./shfs -0 -I 3/2 --J0 1 -A 219
 Parameters:
 - I=3/2
 - J0=1
+- A0=219
 
 ● HFS Energy shift:
 → Magnetic dipole M1
@@ -176,6 +177,7 @@ F=1/2   <H>_E2/B=5/4
 F=3/2   <H>_E2/B=-1
 F=5/2   <H>_E2/B=1/4
 
+
 bye !
 
 $ ./shfs -1 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --A0 12 --A1 -5
@@ -185,26 +187,31 @@ Parameters:
 - J1=1/2
 - F0=4
 - F1=3
-- A0=12 - A1=-5
+- A0=12
+- A1=-5
 
 ❶ HFS Energy shift:
 → Magnetic dipole M1
 <ΔH>_M1=-9.75
 
+
 bye !
 
 $ ./shfs -2 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 10
 Parameters:
-- I=7/2≃3.5
-- J0=1/2≃0.5
-- J1=1/2≃0.5
+- I=7/2
+- J0=1/2
+- J1=1/2
 - F0=4
 - F1=3
-- gf_hf=10
+- gf_FS=10
 
 ❷ HFS oscillator strength:
-→ HFS gf=0
-→ effective ngf=0
+→ gf_HFS=26.25
+→ log(gf_HFS)=3.2677
+→ effective ngf_HFS=3.28125
+→ effective log(ngf_HFS)=1.1882
+
 
 bye !
 
@@ -212,7 +219,9 @@ $ ./shfs -3 -I 3/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
 Parameters:
 - I=3/2
 - J0=1/2
+- J1=1/2
 - F0=4
+- F1=3
 
 ❸ HFS Energy shift:
 → Magnetic dipole M1
@@ -220,6 +229,7 @@ Parameters:
 
 → Electric quadrupole E2 
 <ΔH>_E2/B=0
+
 
 bye !
 
