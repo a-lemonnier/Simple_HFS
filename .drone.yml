@@ -1,0 +1,19 @@
+kind: pipeline
+name: build-and-test-amd64
+
+platform:
+  os: linux
+  arch: arm64
+
+steps:
+- name: Build and Test
+  image: ubuntu:19.04
+  commands:
+    - apt-get update -y
+    - apt-get install -y make gcc g++ cmake perl libboost-all-dev
+    - cmake .
+    - make
+    - ./shfs -1 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --A0 12 --A1 -5
+    - ./shfs -2 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 10
+    - ./shfs -2 -I 7/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3 --gf 10
+    - ./shfs -3 -I 3/2 --J0 1/2 --F0 4 --J1 1/2 --F1 3
