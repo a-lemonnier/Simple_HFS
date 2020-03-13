@@ -1,4 +1,4 @@
-# Simple_HFS [![Build Status](https://travis-ci.com/a-lemonnier/Simple_HFS.svg?branch=master)](https://travis-ci.com/a-lemonnier/Simple_HFS)
+# Simple_HFS [![Build Status](https://cloud.drone.io/api/badges/a-lemonnier/Simple_HFS/status.svg)](https://cloud.drone.io/a-lemonnier/Simple_HFS)
 
 TODO:
 - _frac<> W6j
